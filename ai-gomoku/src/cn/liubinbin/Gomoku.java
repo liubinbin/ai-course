@@ -20,6 +20,7 @@ public class Gomoku {
     private final int boardLength = 15;
     private CellStatus[][] board;
     private final String cellInterval = "  ";
+    private final int depth_threshold = 5;
 
     public Gomoku() {
         init();
@@ -77,22 +78,31 @@ public class Gomoku {
      * @return
      */
     public Choice gameDFS(CellStatus cellStatus, AlphaBetaPair alphaBetaPair, int level) throws Exception {
-//        System.out.println("level: " + level + " cellStatus: " + cellStatus);
+        System.out.println("level: " + level + " cellStatus: " + cellStatus + " alpha " + alphaBetaPair.getAlpha() + " beta: " + alphaBetaPair.getBeta());
         int x = 1;
         int y = 1;
         boolean isMax = cellStatus == CellStatus.BLACK ? true : false;
         Choice choice = null;
         int value = isMax == true ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-//        boolean isPruning = false;
         for (x = 1; x < boardLength + 1; x++) {
             for (y = 1; y < boardLength + 1; y++) {
                 if (this.board[x][y].equals(CellStatus.NONE)) {
-//                    if (level > 2) {
-//                        return new Choice(x, y, calValue());
-//                    }
                     // make a step
                     markCell(x, y, cellStatus);
-//                    int tempValue = calValue();
+                    if (level > depth_threshold) {
+                        int tempValue = calValue();
+                        if (isMax) {
+                            if (tempValue > alphaBetaPair.getAlpha() ) {
+                                alphaBetaPair.setAlpha(tempValue);
+                            }
+                        } else {
+                            if (alphaBetaPair.getBeta() > tempValue) {
+                                alphaBetaPair.setBeta(tempValue);
+                            }
+                        }
+                        stepBack(x, y);
+                        return new Choice(x, y, tempValue);
+                    }
                     // cal value if we can
                     if (ifCanWin(cellStatus)) {
                         // we can win
@@ -112,7 +122,7 @@ public class Gomoku {
                             if (tempChoice.getValue() > alphaBetaPair.getBeta()) {
                                 stepBack(x, y);
                                 System.out.println("---- ai beta prune");
-                                return null;
+                                return new Choice(x, y, calValue());
                             }
 
                             if (tempChoice.getValue() > value ) {
@@ -124,7 +134,7 @@ public class Gomoku {
                             if (tempChoice.getValue() < alphaBetaPair.getAlpha()) {
                                 stepBack(x, y);
                                 System.out.println("---- ai alpha prune");
-                                return null;
+                                return new Choice(x, y, calValue());
                             }
 
                             if (tempChoice.getValue() < value) {
@@ -432,12 +442,17 @@ public class Gomoku {
                 gomoku.markCell(x, y, CellStatus.WHITE);
                 gomoku.printBoard();
                 System.out.println("AI turn, wait a sec");
+                long time1 = System.currentTimeMillis();
                 Choice choice = gomoku.aiTurn(CellStatus.BLACK);
-                System.out.println("----ai choice.x: " + choice.getX() + " choice.y: " + choice.getY() + " ----");
+                if (choice == null) {
+                    System.out.println("ai choice is null");
+                }
+                System.out.println("----ai choice.x: " + choice.getX() + " choice.y: " + choice.getY() + " ---- use time " + (System.currentTimeMillis() - time1));
                 gomoku.markCell(choice.getX(), choice.getY(), CellStatus.BLACK);
                 gomoku.printBoard();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
+//                System.out.println(e.getMessage());
                 continue;
             }
         }
