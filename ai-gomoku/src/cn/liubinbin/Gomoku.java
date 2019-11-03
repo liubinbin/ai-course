@@ -20,7 +20,7 @@ public class Gomoku {
     private final int boardLength = 15;
     private CellStatus[][] board;
     private final String cellInterval = "  ";
-    private final int depth_threshold = 5;
+    private final int depth_threshold = 4; // should be even number;
 
     public Gomoku() {
         init();
@@ -91,6 +91,7 @@ public class Gomoku {
                     markCell(x, y, cellStatus);
                     if (level > depth_threshold) {
                         int tempValue = calValue();
+                        System.out.println("depth_threshold isMax " + isMax + " " + tempValue + " | " + alphaBetaPair.getAlpha() + " | " + alphaBetaPair.getBeta());
                         if (isMax) {
                             if (tempValue > alphaBetaPair.getAlpha() ) {
                                 alphaBetaPair.setAlpha(tempValue);
@@ -117,6 +118,7 @@ public class Gomoku {
                     // if tempChoice is not null, pick the best choice
                     if (tempChoice != null) {
                         // have choice
+                        System.out.println("isMax " + isMax + " " + tempChoice.getValue() + " | " + alphaBetaPair.getAlpha() + " | " + alphaBetaPair.getBeta());
                         if (isMax) {
                             // prune
                             if (tempChoice.getValue() > alphaBetaPair.getBeta()) {
@@ -124,7 +126,8 @@ public class Gomoku {
                                 System.out.println("---- ai beta prune");
                                 return new Choice(x, y, calValue());
                             }
-
+                            // update choice and value
+                            System.out.println("max update tempChoice.getValue(): " + tempChoice.getValue() + " value: " + value);
                             if (tempChoice.getValue() > value ) {
                                 value = tempChoice.getValue();
                                 choice = tempChoice;
@@ -136,7 +139,8 @@ public class Gomoku {
                                 System.out.println("---- ai alpha prune");
                                 return new Choice(x, y, calValue());
                             }
-
+                            // update choice and value
+//                            System.out.println("min update tempChoice.getValue(): " + tempChoice.getValue() + " value: " + value);
                             if (tempChoice.getValue() < value) {
                                 value = tempChoice.getValue();
                                 choice = tempChoice;
