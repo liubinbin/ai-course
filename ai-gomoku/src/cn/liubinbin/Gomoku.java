@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
+ * homework: 用alpha-beta剪枝实现一个简易的五子棋AI
+ * <p>
  * 默认设定
  * AI 黑棋
  * 人 白棋
@@ -63,7 +65,8 @@ public class Gomoku {
 
     public Choice aiTurn(CellStatus cellStatus) throws Exception {
         // TODO to check uncleValue
-        Choice choice = gameDFS(cellStatus, Integer.MIN_VALUE);
+        AlphaBetaPair alphaBetaPair = new AlphaBetaPair();
+        Choice choice = gameDFS(cellStatus, alphaBetaPair);
         return choice;
     }
 
@@ -75,7 +78,7 @@ public class Gomoku {
      * @param uncleValue
      * @return
      */
-    public Choice gameDFS(CellStatus cellStatus, int uncleValue) {
+    public Choice gameDFS(CellStatus cellStatus, AlphaBetaPair alphaBetaPair) throws Exception {
         int x = 1;
         int y = 1;
         boolean isMax = cellStatus == CellStatus.BLACK ? true : false;
@@ -83,37 +86,42 @@ public class Gomoku {
         for (x = 1; x < boardLength + 1; x++) {
             for (y = 1; y < boardLength + 1; y++) {
                 if (this.board[x][y].equals(CellStatus.NONE)) {
+                    // make a step
                     markCell(x, y, cellStatus);
                     int tempValue = calValue();
-                    Choice choice = gameDFS(otherStatus(cellStatus), value);
+                    Choice choice = gameDFS(otherStatus(cellStatus), alphaBetaPair);
                     // TODO update value based on isMax, do pruning
 
+                    // step back
                     stepBack(x, y);
                 }
             }
         }
+        // update alphaBetaPair
         // 无位子可下
         return null;
     }
 
     private CellStatus otherStatus(CellStatus cellStatus) {
-        return cellStatus == CellStatus.WHITE:CellStatus.BLACK:CellStatus.WHITE;
+        return cellStatus == CellStatus.WHITE ? CellStatus.BLACK : CellStatus.WHITE;
     }
 
     private void stepBack(int x, int y) {
         this.board[x][y] = CellStatus.NONE;
     }
 
-    // TODO
-    private int calStatusValueForAI(int x, int y) {
-        return calValuePosStatus(x, y, CellStatus.BLACK) - calValuePosStatus(x, y, CellStatus.WHITE);
+    // TODO 计算局势
+    public int calValue() {
+        long time1 = System.currentTimeMillis();
+        int valueForBlack = calValueByStatus(CellStatus.BLACK);
+        long time2 = System.currentTimeMillis();
+        int valueForWhite = calValueByStatus(CellStatus.WHITE);
+        long time3 = System.currentTimeMillis();
+        System.out.println("one round calValue: black: " + (time2 - time1) + " white: " + (time3 - time2) + " total: " + (time3 - time1));
+        return valueForBlack - valueForWhite;
     }
 
-    private int calValue() {
-        return calValueByStatus(CellStatus.BLACK) - calValueByStatus(CellStatus.WHITE);
-    }
-
-    private int calValueByStatus(CellStatus cellStatus) {
+    public int calValueByStatus(CellStatus cellStatus) {
         int value = 0;
         int x, y;
         for (x = 1; x < boardLength + 1; x++) {
@@ -123,6 +131,7 @@ public class Gomoku {
                 }
             }
         }
+        return value;
     }
 
     /**
@@ -133,114 +142,140 @@ public class Gomoku {
      * @param cellStatus
      * @return
      */
-    private int calValuePosStatus(int x, int y, CellStatus cellStatus) {
+    public int calValuePosStatus(int x, int y, CellStatus cellStatus) {
         int value = 0;
         // 向右
-        value += calRightDirection(x, y, cellStatus);
+        value += calValueByDirection(x, y, cellStatus, Direction.RIGHT, Direction.LEFT);
+        System.out.println("value after right: " + value);
 
         // 向下
-        value += calDownDirection(x, y, cellStatus)
+        value += calValueByDirection(x, y, cellStatus, Direction.DOWN, Direction.UP);
+        System.out.println("value after down: " + value);
 
         // 向右下
-        value += calRightDownDirection(x, y, cellStatus)
+        value += calValueByDirection(x, y, cellStatus, Direction.RIGHT_DOWN, Direction.LEFT_UP);
+        System.out.println("value after rightdown: " + value);
 
         // 向右上
-        value += calRightUpDirection(x, y, cellStatus)
-
+        value += calValueByDirection(x, y, cellStatus, Direction.RIGHT_UP, Direction.LEFT_DOWN);
+        System.out.println("value after rightup: " + value);
         return value;
     }
 
-
-    // TODO
-    private int calDownDirection(int x, int y, CellStatus cellStatus) {
-        return 1;
-    }
-
-    // TODO
-    private int calRightDownDirection(int x, int y, CellStatus cellStatus) {
-        return 1;
-    }
-
-    // TODO
-    private int calRightUpDirection(int x, int y, CellStatus cellStatus) {
-        return 1;
-    }
-
-    // TODO
-    private int calRightDirection(int x, int y, CellStatus cellStatus) {
-        boolean isLeftOpen = false;
-        boolean isRightOpen = false;
-        // 向右, 四种情况
-        if (isLeftEdge(x, y) || !ifLeftHasSame(cellStatus)) {
-            /// 左边为边边 | 左边为不同颜色
-            isLeftOpen = false;
-        } else if (ifLeftHasNone(x, y)) {
-            /// 左边为空
-            isLeftOpen = true;
-        } else {
-            /// 左边为相同颜色,
+    /**
+     * @param x
+     * @param y
+     * @param cellStatus
+     * @return
+     */
+    private int calValueByDirection(int x, int y, CellStatus cellStatus, Direction direction, Direction negDirection) {
+        boolean isNegDirectionOpen = false;
+        boolean isDirectionOpen = false;
+        // 反方向, 四种情况
+        if (isDirectEdge(x, y, negDirection)) {
+            /// 反方向为边边
+            isNegDirectionOpen = false;
+        } else if (ifDirectionHasNone(x, y, negDirection)) {
+            /// 反方向为空
+            isNegDirectionOpen = true;
+        } else if (ifDirectionHasSame(x, y, cellStatus, negDirection)) {
+            /// 反方向为相同颜色
             return 0;
+        } else {
+            /// 反方向为不同颜色,
+            isNegDirectionOpen = false;
         }
 
-        int len = 1
-        int tempx = x + 1;
-        while (!isOutOfEdge(tempx, y) && ifPosSame(tempx, y, cellStatus)) {
+        int len = 1;
+        int tempx = x + direction.getX();
+        int tempy = y + direction.getY();
+        while (!isOutOfEdge(tempx, tempy) && ifPosSame(tempx, tempy, cellStatus)) {
             len++;
+            tempx += direction.getX();
+            tempy += direction.getY();
         }
 
-        if (isRightEdge(tempx, y)) {
-            // 右边是边边
-            isRightOpen = false;
-        } else if (ifPosNone(tempx, y)) {
-            // 左边无落子
-            isRightOpen = true;
+        if (isOutOfEdge(tempx, tempy)) {
+            // 正方向是边边
+            isDirectionOpen = false;
+        } else if (ifPosNone(tempx, tempy)) {
+            // 正方向无落子
+            isDirectionOpen = true;
         } else {
-            // 右边为不同颜色
-            isRightOpen = false;
+            // 正方向为不同颜色
+            isDirectionOpen = false;
         }
 
-        if (isRightOpen == false && isLeftOpen == false) {
+        if (isDirectionOpen == false && isNegDirectionOpen == false) {
+            // 两头都没有空节点
+            if (len == 5) {
+                // 只有当下了能五连菜可以。
+                return 50000;
+            }
             return 0;
+        } else if (isNegDirectionOpen == true && isDirectionOpen == true) {
+            // 两头都有空节点，称为活节点
+            return getValueForLen(len, true);
+        } else {
+            // 只有一头都有空节点，称为死节点
+            return getValueForLen(len, false);
         }
+    }
 
-        if (isLeftOpen == true && isRightOpen == true) {
 
+    /**
+     * 单独一子    二子相连    三子相连    四子相连        五子相连
+     * 活一 死一   活二 死二   活三 死三   活四 死四       五连
+     * 20   4     400  90    6000 800   20000 10000    50000
+     *
+     * @param len 连子长度
+     * @param len 是否是活子，true 代表是活子， false 代表是死子。
+     * @return
+     */
+    private int getValueForLen(int len, boolean isOpen) {
+        if (isOpen) {
+            if (len < 1) {
+                return 0;
+            } else if (len == 1) {
+                return 20;
+            } else if (len == 2) {
+                return 400;
+            } else if (len == 3) {
+                return 6000;
+            } else if (len == 4) {
+                return 20000;
+            } else {
+                return 50000;
+            }
+        } else {
+            if (len < 1) {
+                return 0;
+            } else if (len == 1) {
+                return 4;
+            } else if (len == 2) {
+                return 90;
+            } else if (len == 3) {
+                return 800;
+            } else if (len == 4) {
+                return 10000;
+            } else {
+                return 50000;
+            }
         }
 
     }
+
 
     private boolean isOutOfEdge(int x, int y) {
-        if (x > boardLength) {
+        if (x > boardLength || y > boardLength || x < 1 || y < 1) {
             return true;
         } else {
             return false;
         }
     }
 
-    private boolean isRightEdge(int x, int y) {
-        if (x == boardLength) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    private boolean isLeftEdge(int x, int y) {
-        if (x == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean ifLeftHasOpen(int x, int y) {
-        if (x == 1) {
-            return false;
-        }
-        if (this.board[x - 1][y].equals(CellStatus.NONE)) {
-            return ture;
-        }
+    private boolean isDirectEdge(int x, int y, Direction direction) {
+        return isOutOfEdge(x + direction.getX(), y + direction.getY());
     }
 
     private boolean ifPosSame(int x, int y, CellStatus cellStatus) {
@@ -251,29 +286,22 @@ public class Gomoku {
         }
     }
 
-    private boolean ifLeftHasSame(int x, int y, CellStatus cellStatus) {
-        if (this.board[x - 1][y].equals(cellStatus)) {
+    private boolean ifDirectionHasSame(int x, int y, CellStatus cellStatus, Direction direction) {
+        if (this.board[x + direction.getX()][y + direction.getY()].equals(cellStatus)) {
             return true;
         } else {
             return false;
         }
     }
 
-    private boolean ifLeftHasNone(int x, int y) {
-        if (this.board[x - 1][y].equals(CellStatus.NONE)) {
+    private boolean ifDirectionHasNone(int x, int y, Direction direction) {
+        if (this.board[x + direction.getX()][y + direction.getY()].equals(CellStatus.NONE)) {
             return true;
         } else {
             return false;
         }
     }
 
-    private boolean ifRightHasNone(int x, int y) {
-        if (this.board[x + 1][y].equals(CellStatus.NONE)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     private boolean ifPosNone(int x, int y) {
         if (this.board[x][y].equals(CellStatus.NONE)) {
@@ -284,12 +312,8 @@ public class Gomoku {
     }
 
 
-    private int countFiveSuccession() {
-        return 9;
-    }
-
     public void doMain() throws IOException {
-        System.out.println("welcome to ai-gomoku, you picked white");
+        System.out.println("welcome to ai-gomoku, your colour is white");
         Gomoku gomoku = new Gomoku();
         gomoku.printBoard();
         while (true) {
