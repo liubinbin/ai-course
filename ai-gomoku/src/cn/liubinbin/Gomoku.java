@@ -64,9 +64,8 @@ public class Gomoku {
     }
 
     public Choice aiTurn(CellStatus cellStatus) throws Exception {
-        // TODO to check uncleValue
         AlphaBetaPair alphaBetaPair = new AlphaBetaPair();
-        Choice choice = gameDFS(cellStatus, alphaBetaPair);
+        Choice choice = gameDFS(cellStatus, alphaBetaPair, 1);
         return choice;
     }
 
@@ -77,45 +76,66 @@ public class Gomoku {
      * @param alphaBetaPair， 用于剪枝
      * @return
      */
-    public Choice gameDFS(CellStatus cellStatus, AlphaBetaPair alphaBetaPair) throws Exception {
+    public Choice gameDFS(CellStatus cellStatus, AlphaBetaPair alphaBetaPair, int level) throws Exception {
+//        System.out.println("level: " + level + " cellStatus: " + cellStatus);
         int x = 1;
         int y = 1;
         boolean isMax = cellStatus == CellStatus.BLACK ? true : false;
         Choice choice = null;
         int value = isMax == true ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+//        boolean isPruning = false;
         for (x = 1; x < boardLength + 1; x++) {
             for (y = 1; y < boardLength + 1; y++) {
                 if (this.board[x][y].equals(CellStatus.NONE)) {
+//                    if (level > 2) {
+//                        return new Choice(x, y, calValue());
+//                    }
                     // make a step
                     markCell(x, y, cellStatus);
 //                    int tempValue = calValue();
                     // cal value if we can
                     if (ifCanWin(cellStatus)) {
-                        // 本方可以获胜
+                        // we can win
                         int temp = cellStatus == CellStatus.BLACK ? Constants.wulian : 0 - Constants.wulian;
+                        stepBack(x, y);
                         return new Choice(x, y, temp);
                     }
 
                     // pick value from choice
-                    Choice tempChoice = gameDFS(otherStatus(cellStatus), alphaBetaPair);
-                    // TODO update value based on isMax, do pruning
+//                    System.out.println("call gameDFS x: " + x + " y: " + y + " level: " + level + " cellStatus: " + cellStatus);
+                    Choice tempChoice = gameDFS(otherStatus(cellStatus), alphaBetaPair, level + 1);
                     // if tempChoice is not null, pick the best choice
                     if (tempChoice != null) {
-                        // 只能选择
+                        // have choice
                         if (isMax) {
+                            // prune
+                            if (tempChoice.getValue() > alphaBetaPair.getBeta()) {
+                                stepBack(x, y);
+                                System.out.println("---- ai beta prune");
+                                return null;
+                            }
+
                             if (tempChoice.getValue() > value ) {
                                 value = tempChoice.getValue();
                                 choice = tempChoice;
                             }
                         } else {
+                            // prune
+                            if (tempChoice.getValue() < alphaBetaPair.getAlpha()) {
+                                stepBack(x, y);
+                                System.out.println("---- ai alpha prune");
+                                return null;
+                            }
+
                             if (tempChoice.getValue() < value) {
                                 value = tempChoice.getValue();
                                 choice = tempChoice;
                             }
                         }
                     } else {
-                        // 没有地方可以下棋，所以返回平局。
-                        return new Choice(x, y, 0);
+                        // no chice coz board is full or prune
+                        stepBack(x, y);
+                        return new Choice(x, y, calValue());
                     }
                     // step back
                     stepBack(x, y);
@@ -224,19 +244,19 @@ public class Gomoku {
         int value = 0;
         // 向右
         value += calValueByDirection(x, y, cellStatus, Direction.RIGHT, Direction.LEFT);
-        System.out.println("value after right: " + value);
+//        System.out.println("value after right: " + value);
 
         // 向下
         value += calValueByDirection(x, y, cellStatus, Direction.DOWN, Direction.UP);
-        System.out.println("value after down: " + value);
+//        System.out.println("value after down: " + value);
 
         // 向右下
         value += calValueByDirection(x, y, cellStatus, Direction.RIGHT_DOWN, Direction.LEFT_UP);
-        System.out.println("value after rightdown: " + value);
+//        System.out.println("value after rightdown: " + value);
 
         // 向右上
         value += calValueByDirection(x, y, cellStatus, Direction.RIGHT_UP, Direction.LEFT_DOWN);
-        System.out.println("value after rightup: " + value);
+//        System.out.println("value after rightup: " + value);
         return value;
     }
 
@@ -413,7 +433,7 @@ public class Gomoku {
                 gomoku.printBoard();
                 System.out.println("AI turn, wait a sec");
                 Choice choice = gomoku.aiTurn(CellStatus.BLACK);
-                System.out.println("---- choice.x: " + x + " choice.y: " + y + " ----");
+                System.out.println("----ai choice.x: " + choice.getX() + " choice.y: " + choice.getY() + " ----");
                 gomoku.markCell(choice.getX(), choice.getY(), CellStatus.BLACK);
                 gomoku.printBoard();
             } catch (Exception e) {
@@ -422,16 +442,6 @@ public class Gomoku {
             }
         }
 
-    }
-
-    /**
-     * TODO
-     * 检查是否后有某人获胜了
-     *
-     * @return
-     */
-    private boolean isSbWin() {
-        return false;
     }
 
     public static void main(String[] args) throws IOException {
