@@ -72,34 +72,67 @@ public class Gomoku {
 
 
     /**
-     * uncleValue 用来做裁剪
-     *
+     * 返回值如果是 null 的话，说明以无法放棋子。
      * @param cellStatus
-     * @param uncleValue
+     * @param alphaBetaPair， 用于剪枝
      * @return
      */
     public Choice gameDFS(CellStatus cellStatus, AlphaBetaPair alphaBetaPair) throws Exception {
         int x = 1;
         int y = 1;
         boolean isMax = cellStatus == CellStatus.BLACK ? true : false;
-        int value = cellStatus == CellStatus.WHITE ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        Choice choice = null;
+        int value = isMax == true ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         for (x = 1; x < boardLength + 1; x++) {
             for (y = 1; y < boardLength + 1; y++) {
                 if (this.board[x][y].equals(CellStatus.NONE)) {
                     // make a step
                     markCell(x, y, cellStatus);
-                    int tempValue = calValue();
-                    Choice choice = gameDFS(otherStatus(cellStatus), alphaBetaPair);
-                    // TODO update value based on isMax, do pruning
+//                    int tempValue = calValue();
+                    // cal value if we can
+                    if (ifCanWin(cellStatus)) {
+                        // 本方可以获胜
+                        int temp = cellStatus == CellStatus.BLACK ? Constants.wulian : 0 - Constants.wulian;
+                        return new Choice(x, y, temp);
+                    }
 
+                    // pick value from choice
+                    Choice tempChoice = gameDFS(otherStatus(cellStatus), alphaBetaPair);
+                    // TODO update value based on isMax, do pruning
+                    // if tempChoice is not null, pick the best choice
+                    if (tempChoice != null) {
+                        // 只能选择
+                        if (isMax) {
+                            if (tempChoice.getValue() > value ) {
+                                value = tempChoice.getValue();
+                                choice = tempChoice;
+                            }
+                        } else {
+                            if (tempChoice.getValue() < value) {
+                                value = tempChoice.getValue();
+                                choice = tempChoice;
+                            }
+                        }
+                    } else {
+                        // 没有地方可以下棋，所以返回平局。
+                        return new Choice(x, y, 0);
+                    }
                     // step back
                     stepBack(x, y);
                 }
             }
         }
         // update alphaBetaPair
-        // 无位子可下
-        return null;
+        if (isMax) {
+            if (value > alphaBetaPair.getAlpha() ) {
+                alphaBetaPair.setAlpha(value);
+            }
+        } else {
+            if (alphaBetaPair.getBeta() > value) {
+                alphaBetaPair.setBeta(value);
+            }
+        }
+        return choice;
     }
 
     private CellStatus otherStatus(CellStatus cellStatus) {
@@ -110,14 +143,30 @@ public class Gomoku {
         this.board[x][y] = CellStatus.NONE;
     }
 
-    // TODO 计算局势
+    public boolean ifCanWin(CellStatus cellStatus) {
+        boolean ifCanWin = false;
+        int x, y;
+        for (x = 1; x < boardLength + 1; x++) {
+            for (y = 1; y < boardLength + 1; y++) {
+                if (this.board[x][y].equals(cellStatus)) {
+                    ifCanWin = ifCanWinPosStatus(x, y, cellStatus);
+                    if (ifCanWin) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // 计算局势
     public int calValue() {
-        long time1 = System.currentTimeMillis();
+//        long time1 = System.currentTimeMillis();
         int valueForBlack = calValueByStatus(CellStatus.BLACK);
-        long time2 = System.currentTimeMillis();
+//        long time2 = System.currentTimeMillis();
         int valueForWhite = calValueByStatus(CellStatus.WHITE);
-        long time3 = System.currentTimeMillis();
-        System.out.println("one round calValue: black: " + (time2 - time1) + " white: " + (time3 - time2) + " total: " + (time3 - time1));
+//        long time3 = System.currentTimeMillis();
+//        System.out.println("one round calValue: black: " + (time2 - time1) + " white: " + (time3 - time2) + " total: " + (time3 - time1));
         return valueForBlack - valueForWhite;
     }
 
@@ -132,6 +181,35 @@ public class Gomoku {
             }
         }
         return value;
+    }
+
+    // 判断是否可以成功
+    public boolean ifCanWinPosStatus(int x, int y, CellStatus cellStatus) {
+        int value = 0;
+        // 向右
+        value = calValueByDirection(x, y, cellStatus, Direction.RIGHT, Direction.LEFT);
+        if (value == Constants.wulian) {
+            return true;
+        }
+
+        // 向下
+        value = calValueByDirection(x, y, cellStatus, Direction.DOWN, Direction.UP);
+        if (value == Constants.wulian) {
+            return true;
+        }
+
+        // 向右下
+        value = calValueByDirection(x, y, cellStatus, Direction.RIGHT_DOWN, Direction.LEFT_UP);
+        if (value == Constants.wulian) {
+            return true;
+        }
+
+        // 向右上
+        value = calValueByDirection(x, y, cellStatus, Direction.RIGHT_UP, Direction.LEFT_DOWN);
+        if (value == Constants.wulian) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -210,7 +288,7 @@ public class Gomoku {
             // 两头都没有空节点
             if (len == 5) {
                 // 只有当下了能五连菜可以。
-                return 50000;
+                return Constants.wulian;
             }
             return 0;
         } else if (isNegDirectionOpen == true && isDirectionOpen == true) {
@@ -235,31 +313,31 @@ public class Gomoku {
     private int getValueForLen(int len, boolean isOpen) {
         if (isOpen) {
             if (len < 1) {
-                return 0;
+                return Constants.zero;
             } else if (len == 1) {
-                return 20;
+                return Constants.huoyi;
             } else if (len == 2) {
-                return 400;
+                return Constants.huoer;
             } else if (len == 3) {
-                return 6000;
+                return Constants.huosan;
             } else if (len == 4) {
-                return 20000;
+                return Constants.huosi;
             } else {
-                return 50000;
+                return Constants.wulian;
             }
         } else {
             if (len < 1) {
-                return 0;
+                return Constants.zero;
             } else if (len == 1) {
-                return 4;
+                return Constants.siyi;
             } else if (len == 2) {
-                return 90;
+                return Constants.sier;
             } else if (len == 3) {
-                return 800;
+                return Constants.sisan;
             } else if (len == 4) {
-                return 10000;
+                return Constants.sisi;
             } else {
-                return 50000;
+                return Constants.wulian;
             }
         }
 
@@ -334,7 +412,9 @@ public class Gomoku {
                 gomoku.markCell(x, y, CellStatus.WHITE);
                 gomoku.printBoard();
                 System.out.println("AI turn, wait a sec");
-                gomoku.aiTurn(CellStatus.BLACK);
+                Choice choice = gomoku.aiTurn(CellStatus.BLACK);
+                System.out.println("---- choice.x: " + x + " choice.y: " + y + " ----");
+                gomoku.markCell(choice.getX(), choice.getY(), CellStatus.BLACK);
                 gomoku.printBoard();
             } catch (Exception e) {
                 System.out.println(e.getMessage());

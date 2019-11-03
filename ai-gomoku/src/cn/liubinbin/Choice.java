@@ -6,6 +6,12 @@ public class Choice {
     private int y;
     private int value;
 
+    public Choice(int x, int y, int value) {
+        this.x = x;
+        this.y = y;
+        this.value = value;
+    }
+
     public int getX() {
         return x;
     }
