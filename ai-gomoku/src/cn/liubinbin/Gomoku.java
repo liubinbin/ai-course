@@ -20,8 +20,9 @@ public class Gomoku {
 
     private final int boardLength = 15;
     private final String cellInterval = "  ";
-    private final int depth_threshold = 4;
+    private final int depth_threshold = 2;
     private final boolean pruning = true;
+    private final int defence = 1;
     private CellStatus[][] board;
 
     public Gomoku() {
@@ -242,7 +243,7 @@ public class Gomoku {
     public int calValue() {
         int valueForBlack = calValueByStatus(CellStatus.BLACK);
         int valueForWhite = calValueByStatus(CellStatus.WHITE);
-        return valueForBlack - (valueForWhite * 3);
+        return valueForBlack - ( valueForWhite * defence );
     }
 
     public int calValueByStatus(CellStatus cellStatus) {
@@ -494,7 +495,7 @@ public class Gomoku {
                     gomoku.printBoard();
                     if (gomoku.ifCanWin(CellStatus.WHITE)) {
                         isFinish = true;
-                        System.out.println("***** people win *****");
+                        System.out.println("***** YOU WIN *****");
                     }
                     break;
                 } catch (Exception e) {
@@ -517,7 +518,7 @@ public class Gomoku {
                     gomoku.printBoard();
                     if (gomoku.ifCanWin(CellStatus.BLACK)) {
                         isFinish = true;
-                        System.out.println("***** ai win *****");
+                        System.out.println("***** AI WIN *****");
                     }
                     break;
                 } catch (Exception e) {

@@ -11,6 +11,6 @@ public class Constants {
     public static final Integer sisan = 800;
     public static final Integer huosi = 20000;
     public static final Integer sisi = 10000;
-    public static final Integer wulian = 500000;
+    public static final Integer wulian = 50000;
 
 }
