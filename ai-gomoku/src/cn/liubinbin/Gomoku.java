@@ -19,7 +19,7 @@ public class Gomoku {
 
     private final int boardLength = 15;
     private final String cellInterval = "  ";
-    private final int depth_threshold = 4; // should be even number;
+    private final int depth_threshold = 2; // should be even number;
     private CellStatus[][] board;
 
     public Gomoku() {
@@ -87,6 +87,9 @@ public class Gomoku {
      * @return
      */
     public Choice gameDFS(CellStatus cellStatus, AlphaBetaPair alphaBetaPair, int level) throws Exception {
+        if (level > depth_threshold) {
+            return null;
+        }
         // System.out.println("level: " + level + " cellStatus: " + cellStatus + " alpha " + alphaBetaPair.getAlpha() + " beta: " + alphaBetaPair.getBeta());
         int x = 1;
         int y = 1;
@@ -98,21 +101,8 @@ public class Gomoku {
                 if (this.board[x][y].equals(CellStatus.NONE)) {
                     // make a step
                     markCell(x, y, cellStatus);
-                    if (level > depth_threshold) {
-                        int tempValue = calValue();
-                        // System.out.println("depth_threshold isMax " + isMax + " " + tempValue + " | " + alphaBetaPair.getAlpha() + " | " + alphaBetaPair.getBeta());
-                        if (isMax) {
-                            if (tempValue > alphaBetaPair.getAlpha()) {
-                                alphaBetaPair.setAlpha(tempValue);
-                            }
-                        } else {
-                            if (alphaBetaPair.getBeta() > tempValue) {
-                                alphaBetaPair.setBeta(tempValue);
-                            }
-                        }
-                        stepBack(x, y);
-                        return new Choice(x, y, tempValue);
-                    }
+                    System.out.println("level: " + level + " isMax: " + isMax + "pick x: " + x + " y: " + y + " value: " + calValue());
+
                     // cal value if we can
                     if (ifCanWin(cellStatus)) {
                         // we can win
@@ -130,26 +120,28 @@ public class Gomoku {
                         // System.out.println("isMax " + isMax + " " + tempChoice.getValue() + " | " + alphaBetaPair.getAlpha() + " | " + alphaBetaPair.getBeta());
                         if (isMax) {
                             // prune
-                            if (tempChoice.getValue() > alphaBetaPair.getBeta()) {
-                                stepBack(x, y);
-                                // System.out.println("---- ai beta prune");
-                                return new Choice(x, y, calValue());
-                            }
+//                            if (tempChoice.getValue() > alphaBetaPair.getBeta()) {
+//                                stepBack(x, y);
+//                                 System.out.println("---- ai beta prune");
+//                                System.out.println("gameDFS return 3 level " + level);
+//                                return new Choice(x, y, calValue());
+//                            }
                             // update choice and value
-                            // System.out.println("max update tempChoice.getValue(): " + tempChoice.getValue() + " value: " + value);
+                            System.out.println("max update tempChoice.getValue(): " + tempChoice.getValue() + " value: " + value);
                             if (tempChoice.getValue() > value) {
                                 value = tempChoice.getValue();
                                 choice = tempChoice;
                             }
                         } else {
                             // prune
-                            if (tempChoice.getValue() < alphaBetaPair.getAlpha()) {
-                                stepBack(x, y);
-                                // System.out.println("---- ai alpha prune");
-                                return new Choice(x, y, calValue());
-                            }
+//                            if (tempChoice.getValue() < alphaBetaPair.getAlpha()) {
+//                                stepBack(x, y);
+//                                 System.out.println("---- ai alpha prune");
+//                                System.out.println("gameDFS return 4");
+//                                return new Choice(x, y, calValue());
+//                            }
                             // update choice and value
-//                            System.out.println("min update tempChoice.getValue(): " + tempChoice.getValue() + " value: " + value);
+                            System.out.println("min update tempChoice.getValue(): " + tempChoice.getValue() + " value: " + value);
                             if (tempChoice.getValue() < value) {
                                 value = tempChoice.getValue();
                                 choice = tempChoice;
@@ -157,8 +149,19 @@ public class Gomoku {
                         }
                     } else {
                         // no chice coz board is full or prune
-                        stepBack(x, y);
-                        return new Choice(x, y, calValue());
+//                        stepBack(x, y);
+                        int tempvalue = calValue();
+                        if (isMax) {
+                            if (tempvalue > value) {
+                                value = tempvalue;
+                                choice = new Choice(x, y, tempvalue);
+                            }
+                        } else {
+                            if (tempvalue < value) {
+                                value = tempvalue;
+                                choice = new Choice(x, y, tempvalue);
+                            }
+                        }
                     }
                     // step back
                     stepBack(x, y);
@@ -182,7 +185,7 @@ public class Gomoku {
         return cellStatus == CellStatus.WHITE ? CellStatus.BLACK : CellStatus.WHITE;
     }
 
-    private void stepBack(int x, int y) {
+    public void stepBack(int x, int y) {
         this.board[x][y] = CellStatus.NONE;
     }
 
@@ -341,6 +344,10 @@ public class Gomoku {
             // 只有一头都有空节点，称为死节点
             return getValueForLen(len, false);
         }
+    }
+
+    public boolean isPosSameStatus(int x, int y, CellStatus cellStatus) {
+        return this.board[x][y].equals(cellStatus);
     }
 
     /**

@@ -8,15 +8,31 @@ public class TestValue {
         gomoku.markCell(3, 5, CellStatus.WHITE);
         gomoku.markCell(3, 6, CellStatus.WHITE);
         gomoku.markCell(3, 7, CellStatus.WHITE);
-        gomoku.markCell(3, 8, CellStatus.WHITE);
+//        gomoku.markCell(3, 8, CellStatus.WHITE);
+        gomoku.markCell(1, 1, CellStatus.BLACK);
+        gomoku.markCell(1, 2, CellStatus.BLACK);
+        gomoku.markCell(1, 3, CellStatus.BLACK);
+//        gomoku.markCell(3, 4, CellStatus.BLACK);
         gomoku.printBoard();
-        int valueByPosStatus = gomoku.calValuePosStatus(3, 4, CellStatus.WHITE);
-        System.out.println("valueByPosStatus: " + valueByPosStatus);
-        System.out.println("ifCanWin: " + gomoku.ifCanWin(CellStatus.WHITE));
+        int x;
+        int y;
+        for (x = 1; x < 15 + 1; x++) {
+            for (y = 1; y < 15 + 1; y++) {
+                if ( gomoku.isPosSameStatus(x, y, CellStatus.NONE) ) {
+                    gomoku.markCell(x, y, CellStatus.BLACK);
+                    System.out.println("pick x: " + x + " y: " + y + " value: " + gomoku.calValue());
+                    gomoku.stepBack(x, y);
+                }
+            }
+        }
 
-        long time1 = System.currentTimeMillis();
-        int value = gomoku.calValue();
-        long time2 = System.currentTimeMillis();
-        System.out.println("value: " + value + "  use time: " + (time2 - time1));
+//        int valueByPosStatus = gomoku.calValuePosStatus(3, 4, CellStatus.WHITE);
+//        System.out.println("valueByPosStatus: " + valueByPosStatus);
+//        System.out.println("ifCanWin: " + gomoku.ifCanWin(CellStatus.WHITE));
+//
+//        long time1 = System.currentTimeMillis();
+//        int value = gomoku.calValue();
+//        long time2 = System.currentTimeMillis();
+//        System.out.println("value: " + value + "  use time: " + (time2 - time1));
     }
 }

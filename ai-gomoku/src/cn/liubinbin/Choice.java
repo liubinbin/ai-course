@@ -35,4 +35,9 @@ public class Choice {
     public void setValue(int value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "{x: " + x + ", y: " + y + ", value: " + value + "}";
+    }
 }
