@@ -20,7 +20,7 @@ public class Gomoku {
 
     private final int boardLength = 15;
     private final String cellInterval = "  ";
-    private final int depth_threshold = 5;
+    private final int depth_threshold = 4;
     private final boolean pruning = true;
     private CellStatus[][] board;
 
@@ -111,12 +111,16 @@ public class Gomoku {
                     markCell(x, y, cellStatus);
                     stepPath.push(new Step(x, y, cellStatus));
 
+//                    if (level == 1) {
+//                        System.out.println("---- markCell" );
+//                    }
+
                     // cal value if we can
                     if (ifCanWin(cellStatus)) {
                         // in this case, can win
                         int tempValue = calValue();
 
-                        System.out.println(cellStatus + " can win - level: " + level + " value: " + tempValue + " alphaBetaPair: " + alphaBetaPair + " stepPath: " + stepPath + " level: " + level );
+//                        System.out.println(cellStatus + " can win - level: " + level + " value: " + tempValue + " alphaBetaPair: " + alphaBetaPair + " stepPath: " + stepPath + " level: " + level);
                         stepPath.pop();
 
                         stepBack(x, y);
@@ -125,8 +129,10 @@ public class Gomoku {
                     }
 
                     // pick value from choice
-                    Choice tempChoice = gameDFS(otherStatus(cellStatus), alphaBetaPair, level + 1, stepPath);
-
+                    Choice tempChoice = gameDFS(otherStatus(cellStatus), alphaBetaPair.clone(), level + 1, stepPath);
+//                    if (level == 1) {
+//                        System.out.println("---- tempChoice level: 1 " + " choice: " + x + " | " + x + " | " + tempChoice + " | " + stepPath);
+//                    }
                     // if tempChoice is not null, pick the best choice
                     if (tempChoice != null) {
                         // have choice
@@ -136,7 +142,7 @@ public class Gomoku {
                                 if (tempChoice.getValue() >= alphaBetaPair.getBeta()) {
                                     stepPath.pop();
                                     stepBack(x, y);
-//                                    System.out.println("---- ai beta prune");
+//                                    System.out.println("---- ai beta prune " + alphaBetaPair.getBeta() + " | "+ tempChoice.getValue());
                                     return new Choice(x, y, tempChoice.getValue());
                                 }
                             }
@@ -144,9 +150,9 @@ public class Gomoku {
                             // update choice and value
                             if (tempChoice.getValue() > value) {
                                 value = tempChoice.getValue();
-                                choice = tempChoice;
-                                updateAlphaBeta(isMax, alphaBetaPair, value);
+                                choice = new Choice(x, y, tempChoice.getValue());
                             }
+                            updateAlphaBeta(isMax, alphaBetaPair, tempChoice.getValue());
                         } else {
                             // prune
                             if (pruning) {
@@ -161,9 +167,9 @@ public class Gomoku {
                             // update choice and value
                             if (tempChoice.getValue() < value) {
                                 value = tempChoice.getValue();
-                                choice = tempChoice;
-                                updateAlphaBeta(isMax, alphaBetaPair, value);
+                                choice = new Choice(x, y, tempChoice.getValue());
                             }
+                            updateAlphaBeta(isMax, alphaBetaPair, tempChoice.getValue());
                         }
                     } else {
                         // no chice coz board is full or prune
@@ -172,14 +178,14 @@ public class Gomoku {
                             if (tempvalue > value) {
                                 value = tempvalue;
                                 choice = new Choice(x, y, tempvalue);
-                                updateAlphaBeta(isMax, alphaBetaPair, value);
                             }
+                            updateAlphaBeta(isMax, alphaBetaPair, tempvalue);
                         } else {
                             if (tempvalue < value) {
                                 value = tempvalue;
                                 choice = new Choice(x, y, tempvalue);
-                                updateAlphaBeta(isMax, alphaBetaPair, value);
                             }
+                            updateAlphaBeta(isMax, alphaBetaPair, tempvalue);
                         }
                     }
                     // step back
@@ -236,7 +242,7 @@ public class Gomoku {
     public int calValue() {
         int valueForBlack = calValueByStatus(CellStatus.BLACK);
         int valueForWhite = calValueByStatus(CellStatus.WHITE);
-        return valueForBlack - ( valueForWhite * 3 );
+        return valueForBlack - (valueForWhite * 3);
     }
 
     public int calValueByStatus(CellStatus cellStatus) {
@@ -290,6 +296,9 @@ public class Gomoku {
      * @return
      */
     public int calValuePosStatus(int x, int y, CellStatus cellStatus) {
+        if (!this.board[x][y].equals(cellStatus)) {
+            return 0;
+        }
         int value = 0;
         // 向右
         value += calValueByDirection(x, y, cellStatus, Direction.RIGHT, Direction.LEFT);
@@ -503,7 +512,7 @@ public class Gomoku {
                     if (choice == null) {
                         System.out.println("ai choice is null");
                     }
-                    System.out.println("----ai choice.x: " + choice.getX() + " choice.y: " + choice.getY() + " choice.value: " + choice.getValue()+ " ---- use time " + (System.currentTimeMillis() - time1) + " ms");
+                    System.out.println("----ai choice.x: " + choice.getX() + " choice.y: " + choice.getY() + " choice.value: " + choice.getValue() + " ---- use time " + (System.currentTimeMillis() - time1) + " ms");
                     gomoku.markCell(choice.getX(), choice.getY(), CellStatus.BLACK);
                     gomoku.printBoard();
                     if (gomoku.ifCanWin(CellStatus.BLACK)) {

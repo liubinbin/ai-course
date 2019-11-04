@@ -38,4 +38,23 @@ public class AlphaBetaPair {
     public String toString() {
         return "AlphaBetaPair { alpha: " + this.alpha + ", beta: " + this.beta + "}";
     }
+
+    @Override
+    protected AlphaBetaPair clone() {
+        AlphaBetaPair alphaBetaPair = new AlphaBetaPair();
+        alphaBetaPair.setAlpha(this.alpha);
+        alphaBetaPair.setBeta(this.beta);
+        return alphaBetaPair;
+    }
+
+    public static void main(String[] args) {
+        AlphaBetaPair alphaBetaPair = new AlphaBetaPair();
+        alphaBetaPair.setAlpha(13);
+        alphaBetaPair.setBeta(3);
+
+        AlphaBetaPair clone = alphaBetaPair.clone();
+        System.out.println("alphaBetaPair: " + alphaBetaPair + " clone: " + clone);
+        alphaBetaPair.setAlpha(130);
+        System.out.println("after setAlpha alphaBetaPair: " + alphaBetaPair + " clone: " + clone);
+    }
 }
