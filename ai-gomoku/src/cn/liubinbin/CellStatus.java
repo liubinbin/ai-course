@@ -7,7 +7,7 @@ package cn.liubinbin;
  */
 public enum CellStatus {
 
-    NONE(0, "无"), BLACK(1, "黑"), WHITE(2, "白");
+    NONE(0, "  "), BLACK(1, "黑"), WHITE(2, "白");
 
     private int status;
     private String desc;

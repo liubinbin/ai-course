@@ -6,8 +6,16 @@ public class AlphaBetaPair {
     private int beta;  // 极小值
 
     public AlphaBetaPair() {
-        alpha = Integer.MIN_VALUE;
-        beta = Integer.MAX_VALUE;
+        this.alpha = Integer.MIN_VALUE;
+        this.beta = Integer.MAX_VALUE;
+    }
+
+    public void reInitAlpha() {
+        this.alpha = Integer.MIN_VALUE;
+    }
+
+    public void reInitBeta() {
+        this.beta = Integer.MAX_VALUE;
     }
 
     public int getAlpha() {
@@ -24,5 +32,10 @@ public class AlphaBetaPair {
 
     public void setBeta(int beta) {
         this.beta = beta;
+    }
+
+    @Override
+    public String toString() {
+        return "AlphaBetaPair { alpha: " + this.alpha + ", beta: " + this.beta + "}";
     }
 }
