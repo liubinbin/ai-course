@@ -24,13 +24,20 @@ public class DIYNeuralNetwork {
         // set value to inputLayer;
         this.inputLayer.setValue(source);
 
-        // cal in hiddenLayer;
+        // cal value in hiddenLayer;
         this.hiddenLayer.calValue();
 
-        // cal in outputLayer;
+        // cal value in outputLayer;
         this.outputLayer.calValue();
 
         return this.outputLayer.getOutput();
+    }
+
+    private void train(double[] source, double[] result) {
+        // update weight in outputLayer
+        this.outputLayer.updateWeight(result, null);
+        // update weight in hiddenLayer
+        this.hiddenLayer.updateWeight(outputLayer.getError(), outputLayer.getWeights());
     }
 
     private void printHiddenLayerWeight() {
@@ -41,15 +48,11 @@ public class DIYNeuralNetwork {
         this.outputLayer.printWeights();
     }
 
-    private void train(double[] source, double[] result) {
-
-    }
-
     public static void main(String[] args) throws Exception {
         DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(2,1);
-        diyNeuralNetwork.train(new double[]{1, 1}, new double[]{1});
-        diyNeuralNetwork.train(new double[]{1, 0}, new double[]{0});
-        diyNeuralNetwork.train(new double[]{0, 1}, new double[]{0});
+        diyNeuralNetwork.train(new double[]{1, 1}, new double[]{2});
+        diyNeuralNetwork.train(new double[]{1, 0}, new double[]{1});
+        diyNeuralNetwork.train(new double[]{0, 1}, new double[]{1});
         diyNeuralNetwork.train(new double[]{0, 0}, new double[]{0});
 
         double[] result = diyNeuralNetwork.predict(new double[]{1, 1});

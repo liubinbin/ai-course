@@ -10,14 +10,20 @@ import java.util.List;
  */
 public class Layer {
 
+    private static final double learnRate = 0.01;
     private static final double initWeight = 0.5;
     private static final Double ONE = 1d;
     private LayerType layerType;
     private List<Node> nodes = new ArrayList<Node>();
     private Layer preLayer;
+    /**
+     * 用于计算本层里节点，里面的值为上一层的值在本层节点计算时的权重。
+     * 第一个长度为本层节点个数，第二长度为上一层的节点个数 + 1
+     */
     private double[][] weights;
     private int nodeSize;
     private int preLayerSize;
+    private double[] error;
 
     public Layer(LayerType layerType, int nodeSize, int preLayerSize, Layer preLayer) {
         this.layerType = layerType;
@@ -35,6 +41,7 @@ public class Layer {
                 }
             }
             this.preLayer = preLayer;
+            this.error = new double[nodeSize];
         }
     }
 
@@ -64,6 +71,10 @@ public class Layer {
 
     public void setNodeSize(int nodeSize) {
         this.nodeSize = nodeSize;
+    }
+
+    private double getNodeValue(int idx) {
+        return nodes.get(idx).getValue();
     }
 
     public double[] getOutput() {
@@ -100,6 +111,67 @@ public class Layer {
         }
         for ( int idx = 0; idx < source.length; idx++ ) {
             this.nodes.get(idx).setValue(source[idx]);
+        }
+    }
+
+
+    /***
+     *  计算误差
+     * @param result 输出层的真实结果（非预测结果），也可能是下一层的误差。
+     */
+    public void calError(double[] result, double[][] nextLayerWeight) {
+        if (this.layerType.equals(LayerType.OUTPUT)) {
+            for (int x = 0; x < nodeSize; x++ ) {
+                double value = getNodeValue(x);
+                this.error[x] = value * (1- value) * (result[x] - value);
+            }
+        } else if (this.layerType.equals(LayerType.HIDDEN)) {
+            for (int x = 0; x < nodeSize; x++ ) {
+                double value = getNodeValue(x);
+                double temp = 0;
+                for (int y = 0; y < result.length; y++ ) {
+                    temp += result[y] * nextLayerWeight[y][x];
+                }
+                this.error[x] = value * (1- value) * (temp);
+            }
+        }
+    }
+
+    public double[][] getWeights() {
+        return weights;
+    }
+
+    public void setWeights(double[][] weights) {
+        this.weights = weights;
+    }
+
+    public double[] getError() {
+        return error;
+    }
+
+    public void setError(double[] error) {
+        this.error = error;
+    }
+
+    public void updateWeight(double[] result, double[][] nextLayerWeight) {
+        // 计算误差
+        calError(result, nextLayerWeight);
+        if (this.layerType.equals(LayerType.OUTPUT)) {
+            // 输出层
+            double error = 0;
+            for (int x = 0; x < nodeSize; x++) {
+                for (int y = 0; y < preLayerSize + 1; y++) {
+                    this.weights[x][y] += learnRate * error * (this.nodes.get(x).getValue());
+                }
+            }
+        } else if (this.layerType.equals(LayerType.HIDDEN)) {
+            // 隐藏层
+            double error = 0;
+            for (int x = 0; x < nodeSize; x++) {
+                for (int y = 0; y < preLayerSize + 1; y++) {
+                    this.weights[x][y] += learnRate * this.error[x] * (this.nodes.get(x).getValue());
+                }
+            }
         }
     }
 }
