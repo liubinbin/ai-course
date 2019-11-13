@@ -45,7 +45,7 @@ public class Layer {
         }
     }
 
-    public void printWeights(){
+    public void printWeights() {
         System.out.println("weight is following");
         for (int x = 0; x < nodeSize; x++) {
             for (int y = 0; y < preLayerSize + 1; y++) {
@@ -78,7 +78,7 @@ public class Layer {
     }
 
     public double[] getOutput() {
-        if (this.layerType.equals(LayerType.OUTPUT)){
+        if (this.layerType.equals(LayerType.OUTPUT)) {
             double[] result = new double[nodes.size()];
             int idx;
             int size = nodes.size();
@@ -109,7 +109,7 @@ public class Layer {
         if (source.length != this.nodes.size()) {
             throw new Exception("size does not match");
         }
-        for ( int idx = 0; idx < source.length; idx++ ) {
+        for (int idx = 0; idx < source.length; idx++) {
             this.nodes.get(idx).setValue(source[idx]);
         }
     }
@@ -121,18 +121,18 @@ public class Layer {
      */
     public void calError(double[] result, double[][] nextLayerWeight) {
         if (this.layerType.equals(LayerType.OUTPUT)) {
-            for (int x = 0; x < nodeSize; x++ ) {
+            for (int x = 0; x < nodeSize; x++) {
                 double value = getNodeValue(x);
-                this.error[x] = value * (1- value) * (result[x] - value);
+                this.error[x] = value * (1 - value) * (result[x] - value);
             }
         } else if (this.layerType.equals(LayerType.HIDDEN)) {
-            for (int x = 0; x < nodeSize; x++ ) {
+            for (int x = 0; x < nodeSize; x++) {
                 double value = getNodeValue(x);
                 double temp = 0;
-                for (int y = 0; y < result.length; y++ ) {
+                for (int y = 0; y < result.length; y++) {
                     temp += result[y] * nextLayerWeight[y][x];
                 }
-                this.error[x] = value * (1- value) * (temp);
+                this.error[x] = value * (1 - value) * (temp);
             }
         }
     }
@@ -154,23 +154,12 @@ public class Layer {
     }
 
     public void updateWeight(double[] result, double[][] nextLayerWeight) {
+        double[] preLayerNodeValue = this.preLayer.getOutput();
         // 计算误差
         calError(result, nextLayerWeight);
-        if (this.layerType.equals(LayerType.OUTPUT)) {
-            // 输出层
-            double error = 0;
-            for (int x = 0; x < nodeSize; x++) {
-                for (int y = 0; y < preLayerSize + 1; y++) {
-                    this.weights[x][y] += learnRate * error * (this.nodes.get(x).getValue());
-                }
-            }
-        } else if (this.layerType.equals(LayerType.HIDDEN)) {
-            // 隐藏层
-            double error = 0;
-            for (int x = 0; x < nodeSize; x++) {
-                for (int y = 0; y < preLayerSize + 1; y++) {
-                    this.weights[x][y] += learnRate * this.error[x] * (this.nodes.get(x).getValue());
-                }
+        for (int x = 0; x < nodeSize; x++) {
+            for (int y = 0; y < preLayerSize + 1; y++) {
+                this.weights[x][y] += learnRate * this.error[x] * preLayerNodeValue[y];
             }
         }
     }

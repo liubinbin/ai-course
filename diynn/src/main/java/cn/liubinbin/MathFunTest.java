@@ -6,6 +6,7 @@ import org.apache.commons.math3.linear.RealVector;
 /**
  * Created by bin on 2019/11/13.
  * http://commons.apache.org/proper/commons-math/javadocs/api-3.6.1/index.html?overview-summary.html
+ *
  * @Description: TODO
  */
 public class MathFunTest {
@@ -13,11 +14,11 @@ public class MathFunTest {
     public static void main(String[] args) {
         //定义向量1
         RealVector value1 = new ArrayRealVector(new Double[]{
-                2d,2d,3d
+                2d, 2d, 3d
         });
         //定义向量2
         RealVector value2 = new ArrayRealVector(new Double[]{
-                3d,4d,5d
+                3d, 4d, 5d
         });
         //向量点积
         System.out.println(value1.dotProduct(value2));
@@ -27,8 +28,6 @@ public class MathFunTest {
         arrayRealVector.append(2);
         arrayRealVector.append(3);
         System.out.println("arrayRealVector " + arrayRealVector);
-
-
 
 
 //        //取向量的模
