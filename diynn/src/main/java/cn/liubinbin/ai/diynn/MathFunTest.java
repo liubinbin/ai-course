@@ -1,4 +1,4 @@
-package cn.liubinbin;
+package cn.liubinbin.ai.diynn;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;

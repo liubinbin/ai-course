@@ -1,4 +1,4 @@
-package cn.liubinbin;
+package cn.liubinbin.ai.gomoku;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package cn.liubinbin;
+package cn.liubinbin.ai.diynn;
 
 import java.util.Arrays;
 
@@ -55,7 +55,7 @@ public class DIYNeuralNetwork {
     public static void main(String[] args) throws Exception {
         DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(2, 1);
         int roundCount = 1000000;
-        for (int i = 0; i < 1000000; i ++) {
+        for (int i = 0; i < roundCount; i ++) {
             System.out.println("one train round " + i);
             diyNeuralNetwork.train(new double[]{1, 1}, new double[]{1});
             diyNeuralNetwork.train(new double[]{1, 0}, new double[]{0.5});
@@ -70,7 +70,7 @@ public class DIYNeuralNetwork {
             result = diyNeuralNetwork.predict(new double[]{1, 0});
             System.out.println("0 1 -> result: " + Arrays.toString(result));
 
-            result = diyNeuralNetwork.predict(new double[]{0, 0});
+            result = diyNeuralNetwork.predict(new double[]{0.4, 0.6});
             System.out.println("0 0 -> result: " + Arrays.toString(result));
         }
     }

@@ -1,4 +1,4 @@
-package cn.liubinbin;
+package cn.liubinbin.ai.gomoku;
 
 /**
  * Created by bin on 2019/11/1.

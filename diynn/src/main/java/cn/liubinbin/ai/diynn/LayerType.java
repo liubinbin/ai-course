@@ -1,4 +1,4 @@
-package cn.liubinbin;
+package cn.liubinbin.ai.diynn;
 
 /**
  * Created by bin on 2019/11/13.
