@@ -1,43 +1,58 @@
 package cn.liubinbin;
 
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealVector;
+import java.util.Arrays;
 
 /**
  * Created by bin on 2019/11/12.
- * http://commons.apache.org/proper/commons-math/javadocs/api-3.6.1/index.html?overview-summary.html
+ *
  * @Description: TODO
  */
 public class DIYNeuralNetwork {
-    public static void main(String[] args) {
-        System.out.println("HELLO DIYNeuralNetwork");
-        //定义向量1
-        RealVector value1 = new ArrayRealVector(new Double[]{
-                2d,2d,3d
-        });
-        //定义向量2
-        RealVector value2 = new ArrayRealVector(new Double[]{
-                3d,4d,5d
-        });
-        //取向量的模
-        System.out.println(value1.getNorm());
-        //向量相加
-        System.out.println(value1.add(value2));
-        //向量相减
-        System.out.println(value1.subtract(value2));
-        //向量相除
-        System.out.println(value1.ebeDivide(value2));
-        //向量相乘
-        System.out.println(value1.ebeMultiply(value2));
-        //向量点积
-        System.out.println(value1.dotProduct(value2));
-        //向量之间的距离
-        System.out.println(value1.getDistance(value2));
-        //向量的cos值
-        System.out.println(value1.cosine(value2));
-        //向量的维度
-        System.out.println(value1.getDimension());
-        //向量的三个值相加
-        System.out.println(value1.getL1Norm());
+
+    private Layer inputLayer;
+    private Layer hiddenLayer;
+    private Layer outputLayer;
+    private int hiddenLayerNodeSize = 3;
+
+    public DIYNeuralNetwork(int inputLayNodeSize, int outputLayerNodeSize){
+        this.inputLayer = new Layer(LayerType.INPUT, inputLayNodeSize, 0, null);
+        this.hiddenLayer = new Layer(LayerType.HIDDEN, hiddenLayerNodeSize, inputLayer.getNodeSize(), inputLayer);
+        this.outputLayer = new Layer(LayerType.OUTPUT, outputLayerNodeSize, hiddenLayer.getNodeSize(), hiddenLayer);
+    }
+
+    private double[] predict(double[] source) throws Exception {
+        // set value to inputLayer;
+        this.inputLayer.setValue(source);
+
+        // cal in hiddenLayer;
+        this.hiddenLayer.calValue();
+
+        // cal in outputLayer;
+        this.outputLayer.calValue();
+
+        return this.outputLayer.getOutput();
+    }
+
+    private void printHiddenLayerWeight() {
+        this.hiddenLayer.printWeights();
+    }
+
+    private void printOutputLayerWeight(){
+        this.outputLayer.printWeights();
+    }
+
+    private void train(double[] source, double[] result) {
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(2,1);
+        diyNeuralNetwork.train(new double[]{1, 1}, new double[]{1});
+        diyNeuralNetwork.train(new double[]{1, 0}, new double[]{0});
+        diyNeuralNetwork.train(new double[]{0, 1}, new double[]{0});
+        diyNeuralNetwork.train(new double[]{0, 0}, new double[]{0});
+
+        double[] result = diyNeuralNetwork.predict(new double[]{1, 1});
+        System.out.println("result: " + Arrays.toString(result));
     }
 }
