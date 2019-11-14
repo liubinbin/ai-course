@@ -7,12 +7,22 @@ package cn.liubinbin.ai.index;
  */
 public class Doc {
 
+    private Integer docId;
     private String title;
     private String content;
 
-    public Doc(String title, String content) {
+    public Doc(Integer docId, String title, String content) {
+        this.docId = docId;
         this.title = title;
         this.content = content;
+    }
+
+    public Integer getDocId() {
+        return docId;
+    }
+
+    public void setDocId(Integer docId) {
+        this.docId = docId;
     }
 
     public String getTitle() {
@@ -29,5 +39,10 @@ public class Doc {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "{" + docId + "|" + title + "}";
     }
 }
