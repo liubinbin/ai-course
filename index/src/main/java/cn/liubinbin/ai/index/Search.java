@@ -10,7 +10,7 @@ public class Search {
 
     private Index index;
     private int limit = 10;
-    private boolean showContet = false;
+    private ShowType showType = ShowType.TITLE;
 
     public Search() {
         this.index = new Index();
@@ -34,26 +34,55 @@ public class Search {
             }
             System.out.println("parsed query: " + query);
             Set<Doc> docs = search.query(query);
-            System.out.println("docs: " + docs);
+            search.prettyShow(docs);
         }
     }
 
     public Set<Doc> query(Query query) {
-        Set<Doc> result = new HashSet<>();
+        int count = 0;
+        Set<Doc> docResult = new HashSet<>();
+        Set<Integer> docIds = queryIds(query);
+        if (docIds != null) {
+            for (Integer docId : docIds) {
+                if (count > limit) {
+                    break;
+                }
+                if (showType.equals(ShowType.ID)) {
+                    docResult.add(new Doc(docId, null, null));
+                } else if (showType.equals(ShowType.TITLE)) {
+                    docResult.add(new Doc(docId, index.getDoc(docId).getTitle(), null));
+                }
+                if (showType.equals(ShowType.CONTENT)) {
+                    docResult.add(index.getDoc(docId));
+                }
+                count++;
+            }
+        }
+        return docResult;
+    }
+
+    public Set<Integer> queryIds(Query query) {
+        Set<Integer> docIdResult = new HashSet<>();
         if (query.isSingle()) {
             return index.search(query.getWordA());
         } else {
-            Set<Doc> docA = index.search(query.getWordA());
-            Set<Doc> docB = index.search(query.getWordB());
-            result.addAll(docA);
+            Set<Integer> docA = index.search(query.getWordA());
+            Set<Integer> docB = index.search(query.getWordB());
+            docIdResult.addAll(docA);
             if (query.getBoolFlag().equals(BoolFlag.AND)) {
-                result.retainAll(docB);
-                return result;
+                docIdResult.retainAll(docB);
+                return docIdResult;
             } else if (query.getBoolFlag().equals(BoolFlag.OR)) {
-                result.addAll(docB);
-                return result;
+                docIdResult.addAll(docB);
+                return docIdResult;
             }
         }
         return null;
+    }
+
+    public void prettyShow(Set<Doc> docs) {
+        for (Doc doc : docs) {
+            System.out.println("id: " + doc.getDocId() + " title: " + doc.getTitle() + " content: " + doc.getContent());
+        }
     }
 }

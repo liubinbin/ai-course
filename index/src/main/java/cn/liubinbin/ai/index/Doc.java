@@ -43,6 +43,6 @@ public class Doc {
 
     @Override
     public String toString() {
-        return "{" + docId + "|" + title + "}";
+        return "{" + docId + ";" + title + ";" + content + "}";
     }
 }
