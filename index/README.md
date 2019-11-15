@@ -16,6 +16,8 @@ cn.liubinbin.ai.index.showType 为显示的类型，共三种：id，title，和
 
 cn.liubinbin.ai.index.newsCount  为索引的篇数，最多 10000。
 
+cn.liubinbin.ai.index.Index.rootDataPath 为数据所在的顶层目录，需要根据实际情况更改。
+
 # 运行注意事项
 
 最好直接指定 java 的内存参数 “-Xmx1024m -Xms1024m -XX:+UseConcMarkSweepGC”，否则在 jdk 扩容过程比较慢。
