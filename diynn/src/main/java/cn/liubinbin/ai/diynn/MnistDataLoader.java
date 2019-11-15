@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class MnistDataLoader {
 
-//    private static int count = 10000;
+    //    private static int count = 10000;
     private static int weight = 28;
     private static int height = 28;
     private static int reKind = 10;

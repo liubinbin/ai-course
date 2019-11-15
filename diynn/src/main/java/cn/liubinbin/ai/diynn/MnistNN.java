@@ -1,20 +1,24 @@
 package cn.liubinbin.ai.diynn;
 
+import java.util.Arrays;
+
 /**
  * Created by bin on 2019/11/15.
  * data source url: http://yann.lecun.com/exdb/mnist/
+ *
  * @Description: TODO
  */
 public class MnistNN {
 
     private static int trainCount = 60000;
-    private static int testCount = 10000 ;
+    private static int testCount = 10000;
+    private static String ministRootPath = "/Users/liubinbin/Desktop/MNIST/";
 
     public static void main(String[] args) throws Exception {
-        String trainLabelFile = "C:\\Users\\viruser.v-desktop\\Desktop\\MNIST\\train-labels.idx1-ubyte";
-        String trainImageFile = "C:\\Users\\viruser.v-desktop\\Desktop\\MNIST\\train-images.idx3-ubyte";
-        String testLabelFile = "C:\\Users\\viruser.v-desktop\\Desktop\\MNIST\\t10k-labels.idx1-ubyte";
-        String testImageFile = "C:\\Users\\viruser.v-desktop\\Desktop\\MNIST\\t10k-images.idx3-ubyte";
+        String trainLabelFile = ministRootPath + "train-labels-idx1-ubyte";
+        String trainImageFile = ministRootPath + "train-images-idx3-ubyte";
+        String testLabelFile = ministRootPath + "t10k-labels-idx1-ubyte";
+        String testImageFile = ministRootPath + "t10k-images-idx3-ubyte";
 
         DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(28 * 28, 10);
 
@@ -49,6 +53,7 @@ public class MnistNN {
                     rightCount++;
                 }
             }
+            System.out.println("round: " + round + " image[0]: " + Arrays.toString(diyNeuralNetwork.predict(testImages[0])));
             System.out.println("\nMnistNN right rate: " + rightCount + " / " + testLabels.length);
         }
 

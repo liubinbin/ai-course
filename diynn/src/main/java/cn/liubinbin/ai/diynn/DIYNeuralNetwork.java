@@ -1,6 +1,8 @@
 package cn.liubinbin.ai.diynn;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by bin on 2019/11/12.
@@ -10,14 +12,19 @@ import java.util.Arrays;
 public class DIYNeuralNetwork {
 
     private Layer inputLayer;
-    private Layer hiddenLayer;
+    private List<Layer> hiddenLayers;
     private Layer outputLayer;
+    private int hiddenLayerSize = 5;
     private int hiddenLayerNodeSize = 1000;
 
     public DIYNeuralNetwork(int inputLayNodeSize, int outputLayerNodeSize) {
         this.inputLayer = new Layer(LayerType.INPUT, inputLayNodeSize, 0, null);
-        this.hiddenLayer = new Layer(LayerType.HIDDEN, hiddenLayerNodeSize, inputLayer.getNodeSize(), inputLayer);
-        this.outputLayer = new Layer(LayerType.OUTPUT, outputLayerNodeSize, hiddenLayer.getNodeSize(), hiddenLayer);
+        this.hiddenLayers = new ArrayList<Layer>(hiddenLayerSize);
+        this.hiddenLayers.add(new Layer(LayerType.HIDDEN, hiddenLayerNodeSize, inputLayer.getNodeSize(), inputLayer));
+        for (int i = 1; i < hiddenLayerSize; i++) {
+            this.hiddenLayers.add(new Layer(LayerType.HIDDEN, hiddenLayerNodeSize, hiddenLayers.get(i - 1).getNodeSize(), hiddenLayers.get(i - 1)));
+        }
+        this.outputLayer = new Layer(LayerType.OUTPUT, outputLayerNodeSize, this.hiddenLayers.get(hiddenLayerSize - 1).getNodeSize(), this.hiddenLayers.get(hiddenLayerSize - 1));
     }
 
     public static void main(String[] args) throws Exception {
@@ -66,7 +73,9 @@ public class DIYNeuralNetwork {
         this.inputLayer.setValue(source);
 
         // cal value in hiddenLayer;
-        this.hiddenLayer.calValue();
+        for (int i = 0; i < hiddenLayerSize; i++) {
+            this.hiddenLayers.get(i).calValue();
+        }
 
         // cal value in outputLayer;
         this.outputLayer.calValue();
@@ -75,18 +84,20 @@ public class DIYNeuralNetwork {
     }
 
     public void train(double[] source, double[] result) throws Exception {
-//        System.out.println("one train round");
         predict(source);
         // update weight in outputLayer
         this.outputLayer.updateWeight(result, null);
-//        printOutputLayerWeight();
         // update weight in hiddenLayer
-        this.hiddenLayer.updateWeight(outputLayer.getError(), outputLayer.getWeights());
-//        printHiddenLayerWeight();
+        this.hiddenLayers.get(hiddenLayerSize - 1).updateWeight(outputLayer.getError(), outputLayer.getWeights());
+        for (int i = hiddenLayerSize - 2; i >= 0; i--) {
+            this.hiddenLayers.get(i).updateWeight(hiddenLayers.get(i + 1).getError(), hiddenLayers.get(i + 1).getWeights());
+        }
     }
 
     private void printHiddenLayerWeight() {
-        this.hiddenLayer.printWeights();
+        for (int i = 0; i < hiddenLayerSize; i++) {
+            this.hiddenLayers.get(i).printWeights();
+        }
     }
 
     private void printOutputLayerWeight() {

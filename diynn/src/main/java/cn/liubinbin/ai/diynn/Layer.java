@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Layer {
 
-    private static final double learnRate = 0.1;
+    private static final double learnRate = 0.5;
     private static final double initWeight = 0;
     private static final Double ONE = 1d;
     private LayerType layerType;
