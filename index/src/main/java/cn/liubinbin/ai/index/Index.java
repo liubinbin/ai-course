@@ -35,6 +35,7 @@ public class Index {
     }
 
     public void build() {
+        long time1 = System.currentTimeMillis();
         for (int docId = 1; docId <= newsCount; docId++) {
             String tempFilePath = rootDataPath + docId;
             File file = new File(tempFilePath);
@@ -75,10 +76,11 @@ public class Index {
             }
             System.out.printf("%c已索引: %d 篇, 总 %d 篇...", 13, docId, newsCount);
         }
-        System.out.println("-- build done --");
-        System.out.println("lexicon.getWordSize: " + lexicon.getWordSize());
-        System.out.println("postingList.getWordSize: " + postingList.getWordSize());
-        System.out.println("postingList.getPostSize: " + postingList.getPostSize());
+        System.out.println("\n-- build done --");
+        System.out.println("lexicon WordSize: " + lexicon.getWordSize());
+        System.out.println("postingList WordSize: " + postingList.getWordSize());
+        System.out.println("postingList PostSize: " + postingList.getPostSize());
+        System.out.println("use time: " + (System.currentTimeMillis() - time1) + " ms");
 //        lexicon.printLexicon();
     }
 

@@ -18,7 +18,7 @@ cn.liubinbin.ai.index.newsCount  为索引的篇数，最多 10000。
 
 # 运行注意事项
 
-最好直接指定 java 的内存参数 “-Xmx1024m -Xms1024m”，否则在 jdk 扩容过程比较慢。
+最好直接指定 java 的内存参数 “-Xmx1024m -Xms1024m -XX:+UseConcMarkSweepGC”，否则在 jdk 扩容过程比较慢。
 
 # 支持检索方式
 
