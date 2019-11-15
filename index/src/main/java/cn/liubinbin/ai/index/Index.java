@@ -73,6 +73,7 @@ public class Index {
                 }
 
             }
+            System.out.printf("%c已索引: %d 篇, 总 %d 篇...", 13, docId, newsCount);
         }
         System.out.println("-- build done --");
         System.out.println("lexicon.getWordSize: " + lexicon.getWordSize());

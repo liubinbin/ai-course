@@ -18,8 +18,7 @@ public class Search {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("welcome bin search\n" +
-                "we are building index, please wait a sec");
+        System.out.println("we are building index, please wait a sec");
         Search search = new Search();
 
         while (true) {
