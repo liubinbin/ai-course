@@ -14,8 +14,8 @@ public class DIYNeuralNetwork {
     private Layer inputLayer;
     private List<Layer> hiddenLayers;
     private Layer outputLayer;
-    private int hiddenLayerSize = 5;
-    private int hiddenLayerNodeSize = 1000;
+    private int hiddenLayerSize = 3;
+    private int hiddenLayerNodeSize = 500;
 
     public DIYNeuralNetwork(int inputLayNodeSize, int outputLayerNodeSize) {
         this.inputLayer = new Layer(LayerType.INPUT, inputLayNodeSize, 0, null);

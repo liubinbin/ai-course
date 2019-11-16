@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Created by bin on 2019/11/15.
@@ -86,7 +87,10 @@ public class MnistDataLoader {
     // label 10008 = 10000 + 8 bytes
     // image 7840016 = 10000 * 28 * 28 + 16
     public static void main(String[] args) throws IOException {
-        getLabels("C:\\Users\\viruser.v-desktop\\Desktop\\MNIST\\t10k-labels.idx1-ubyte", 10000);
-        getImages("C:\\Users\\viruser.v-desktop\\Desktop\\MNIST\\t10k-images.idx3-ubyte", 10000);
+//        double[][] labels = getLabels("/Users/liubinbin/Desktop/MNIST/t10k-labels-idx1-ubyte", 10000);
+//        System.out.println(Arrays.toString(labels[2]));
+        double[][] images = getImages("/Users/liubinbin/Desktop/MNIST/t10k-images-idx3-ubyte", 10000);
+        System.out.println(Arrays.toString(images[0]));
+        System.out.println(Arrays.toString(images[1]));
     }
 }

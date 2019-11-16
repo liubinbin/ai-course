@@ -38,21 +38,25 @@ public class MnistNN {
         while (round < 100) {
             System.out.println("start round: " + (round++));
             System.out.println("start to train");
+            long time1 = System.currentTimeMillis();
             for (int i = 0; i < trainLabels.length; i++) {
                 System.out.printf("%c已训练: %d, 训练总量: %d", 13, i, trainLabels.length);
                 diyNeuralNetwork.train(trainImages[i], trainLabels[i]);
             }
+            System.out.println("\ntraining uses time: " + (System.currentTimeMillis() - time1));
 
             System.out.println("\nstart to predict");
+            long time2 = System.currentTimeMillis();
             int rightCount = 0;
             for (int j = 0; j < testLabels.length; j++) {
-                System.out.printf("%c已预测: %d, 预测总量: %d", 13, j, testLabels.length);
-                int predictNum = diyNeuralNetwork.predicToInt(testImages[0]);
+                System.out.printf("%c已预测: %d, 预测准确: %d, 预测总量: %d", 13, j, rightCount, testLabels.length);
+                int predictNum = diyNeuralNetwork.predicToInt(testImages[j]);
                 int trueNum = diyNeuralNetwork.pickBiggesItemIdx(testLabels[j]);
                 if (predictNum == trueNum) {
                     rightCount++;
                 }
             }
+            System.out.println("\n test uses time: " + (System.currentTimeMillis() - time2));
             System.out.println("round: " + round + " image[0]: " + Arrays.toString(diyNeuralNetwork.predict(testImages[0])));
             System.out.println("\nMnistNN right rate: " + rightCount + " / " + testLabels.length);
         }
