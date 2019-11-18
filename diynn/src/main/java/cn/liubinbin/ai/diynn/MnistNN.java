@@ -12,7 +12,7 @@ public class MnistNN {
 
     private static int trainCount = 60000;
     private static int testCount = 10000;
-    private static String ministRootPath = "/Users/liubinbin/Desktop/MNIST/";
+    private static String ministRootPath = "C:\\Users\\viruser.v-desktop\\Desktop\\MNIST\\";
 
     public static void main(String[] args) throws Exception {
         String trainLabelFile = ministRootPath + "train-labels-idx1-ubyte";
@@ -20,7 +20,7 @@ public class MnistNN {
         String testLabelFile = ministRootPath + "t10k-labels-idx1-ubyte";
         String testImageFile = ministRootPath + "t10k-images-idx3-ubyte";
 
-        DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(28 * 28, 10);
+        DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(28 * 28, 10, 2, 20);
 
         System.out.println("start to get train labels");
         double[][] trainLabels = MnistDataLoader.getLabels(trainLabelFile, trainCount);
@@ -59,6 +59,7 @@ public class MnistNN {
             System.out.println("\n test uses time: " + (System.currentTimeMillis() - time2));
             System.out.println("round: " + round + " image[0]: " + Arrays.toString(diyNeuralNetwork.predict(testImages[0])));
             System.out.println("\nMnistNN right rate: " + rightCount + " / " + testLabels.length);
+            Thread.sleep(5000);
         }
 
     }

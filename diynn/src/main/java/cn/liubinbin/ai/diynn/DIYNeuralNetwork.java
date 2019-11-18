@@ -14,10 +14,12 @@ public class DIYNeuralNetwork {
     private Layer inputLayer;
     private List<Layer> hiddenLayers;
     private Layer outputLayer;
-    private int hiddenLayerSize = 3;
-    private int hiddenLayerNodeSize = 500;
+    private int hiddenLayerSize = 1;
+    private int hiddenLayerNodeSize = 40;
 
-    public DIYNeuralNetwork(int inputLayNodeSize, int outputLayerNodeSize) {
+    public DIYNeuralNetwork(int inputLayNodeSize, int outputLayerNodeSize, int hiddenLayerSize, int hiddenLayerNodeSize) {
+        this.hiddenLayerSize = hiddenLayerSize;
+        this.hiddenLayerNodeSize = hiddenLayerNodeSize;
         this.inputLayer = new Layer(LayerType.INPUT, inputLayNodeSize, 0, null);
         this.hiddenLayers = new ArrayList<Layer>(hiddenLayerSize);
         this.hiddenLayers.add(new Layer(LayerType.HIDDEN, hiddenLayerNodeSize, inputLayer.getNodeSize(), inputLayer));
@@ -28,7 +30,7 @@ public class DIYNeuralNetwork {
     }
 
     public static void main(String[] args) throws Exception {
-        DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(2, 1);
+        DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(2, 1, 1, 20);
         int roundCount = 1000000;
         for (int i = 0; i < roundCount; i++) {
             System.out.println("one train round " + i);
