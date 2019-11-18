@@ -8,6 +8,8 @@
 
 2. java 部分为索引模块代码。
 
+   cn.liubinbin.ai.index.Search  为运行主类。
+
 # 程序参数
 
 cn.liubinbin.ai.index.limit 为最终检索输出的最多条数

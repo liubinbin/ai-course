@@ -12,7 +12,7 @@ public class DocCollection {
     private HashMap<Integer, Doc> data;
 
     public DocCollection() {
-        this.data = new HashMap<>(10000);
+        this.data = new HashMap<Integer, Doc>(10000);
     }
 
     public void addDoc(Doc doc) {
