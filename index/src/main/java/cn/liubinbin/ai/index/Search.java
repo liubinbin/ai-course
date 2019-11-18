@@ -39,7 +39,7 @@ public class Search {
 
     public Set<Doc> query(Query query) {
         int count = 0;
-        Set<Doc> docResult = new HashSet<>();
+        Set<Doc> docResult = new HashSet<Doc>();
         Set<Integer> docIds = queryIds(query);
         if (docIds != null) {
             for (Integer docId : docIds) {
@@ -61,7 +61,7 @@ public class Search {
     }
 
     public Set<Integer> queryIds(Query query) {
-        Set<Integer> docIdResult = new HashSet<>();
+        Set<Integer> docIdResult = new HashSet<Integer>();
         if (query.isSingle()) {
             return index.search(query.getWordA());
         } else {

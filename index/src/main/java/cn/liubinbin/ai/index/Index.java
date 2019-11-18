@@ -88,11 +88,11 @@ public class Index {
         // get wordId
         Integer wordId = this.lexicon.getWordId(word);
         if (wordId == null) {
-            return new HashSet<>();
+            return new HashSet<Integer>();
         }
         // get doc
         Set<Post> posts = this.postingList.searchByWordId(wordId);
-        Set<Integer> docIds = new HashSet<>();
+        Set<Integer> docIds = new HashSet<Integer>();
         for (Post post : posts) {
             docIds.add(post.getDocId());
         }
