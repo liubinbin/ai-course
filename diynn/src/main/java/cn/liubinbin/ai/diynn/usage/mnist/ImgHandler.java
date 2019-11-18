@@ -1,4 +1,4 @@
-package cn.liubinbin.ai.diynn;
+package cn.liubinbin.ai.diynn.usage.mnist;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

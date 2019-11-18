@@ -1,4 +1,6 @@
-package cn.liubinbin.ai.diynn;
+package cn.liubinbin.ai.diynn.usage.perceptron;
+
+import cn.liubinbin.ai.diynn.fcnn.FCNeuralNetwork;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,9 +24,9 @@ public class PerceptronNN {
 
     public static void main(String[] args) throws Exception {
 
-        DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(2, 2, 1, 4);
+        FCNeuralNetwork diyNeuralNetwork = new FCNeuralNetwork(2, 2, 1, 4);
 
-        List<TrainItem> trainItems = new ArrayList<>();
+        List<TrainItem> trainItems = new ArrayList<TrainItem>();
         trainItems.add(new TrainItem(10, 8, 0.99, 0.01));
         trainItems.add(new TrainItem(6, 9, 0.99, 0.01));
         trainItems.add(new TrainItem(6, 8, 0.99, 0.01));

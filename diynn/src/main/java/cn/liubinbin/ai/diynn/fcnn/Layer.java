@@ -1,4 +1,4 @@
-package cn.liubinbin.ai.diynn;
+package cn.liubinbin.ai.diynn.fcnn;
 
 import java.util.ArrayList;
 import java.util.List;

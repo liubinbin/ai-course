@@ -1,4 +1,4 @@
-package cn.liubinbin.ai.diynn;
+package cn.liubinbin.ai.diynn.usage.perceptron;
 
 /**
  * Created by bin on 2019/11/18.

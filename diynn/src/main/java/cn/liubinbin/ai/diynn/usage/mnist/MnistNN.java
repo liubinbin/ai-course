@@ -1,4 +1,6 @@
-package cn.liubinbin.ai.diynn;
+package cn.liubinbin.ai.diynn.usage.mnist;
+
+import cn.liubinbin.ai.diynn.fcnn.FCNeuralNetwork;
 
 import java.util.Arrays;
 
@@ -20,7 +22,7 @@ public class MnistNN {
         String testLabelFile = ministRootPath + "t10k-labels-idx1-ubyte";
         String testImageFile = ministRootPath + "t10k-images-idx3-ubyte";
 
-        DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(28 * 28, 10, 2, 20);
+        FCNeuralNetwork diyNeuralNetwork = new FCNeuralNetwork(28 * 28, 10, 1, 30);
 
         System.out.println("start to get train labels");
         double[][] trainLabels = MnistDataLoader.getLabels(trainLabelFile, trainCount);
@@ -36,7 +38,7 @@ public class MnistNN {
 
         int round = 1;
         while (round < 100) {
-            System.out.println("start round: " + (round++));
+            System.out.println("\nstart round: " + (round++));
             System.out.println("start to train");
             long time1 = System.currentTimeMillis();
             for (int i = 0; i < trainLabels.length; i++) {
@@ -58,7 +60,7 @@ public class MnistNN {
             }
             System.out.println("\n test uses time: " + (System.currentTimeMillis() - time2));
             System.out.println("round: " + round + " image[0]: " + Arrays.toString(diyNeuralNetwork.predict(testImages[0])));
-            System.out.println("\nMnistNN right rate: " + rightCount + " / " + testLabels.length);
+            System.out.println("MnistNN right rate: " + rightCount + " / " + testLabels.length);
             Thread.sleep(5000);
         }
 

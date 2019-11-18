@@ -1,4 +1,4 @@
-package cn.liubinbin.ai.diynn;
+package cn.liubinbin.ai.diynn.fcnn;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,10 +6,10 @@ import java.util.List;
 
 /**
  * Created by bin on 2019/11/12.
- *
+ * 全连接神经网络
  * @Description: TODO
  */
-public class DIYNeuralNetwork {
+public class FCNeuralNetwork {
 
     private Layer inputLayer;
     private List<Layer> hiddenLayers;
@@ -17,7 +17,7 @@ public class DIYNeuralNetwork {
     private int hiddenLayerSize = 1;
     private int hiddenLayerNodeSize = 40;
 
-    public DIYNeuralNetwork(int inputLayNodeSize, int outputLayerNodeSize, int hiddenLayerSize, int hiddenLayerNodeSize) {
+    public FCNeuralNetwork(int inputLayNodeSize, int outputLayerNodeSize, int hiddenLayerSize, int hiddenLayerNodeSize) {
         this.hiddenLayerSize = hiddenLayerSize;
         this.hiddenLayerNodeSize = hiddenLayerNodeSize;
         this.inputLayer = new Layer(LayerType.INPUT, inputLayNodeSize, 0, null);
@@ -30,7 +30,7 @@ public class DIYNeuralNetwork {
     }
 
     public static void main(String[] args) throws Exception {
-        DIYNeuralNetwork diyNeuralNetwork = new DIYNeuralNetwork(2, 1, 1, 20);
+        FCNeuralNetwork diyNeuralNetwork = new FCNeuralNetwork(2, 1, 1, 20);
         int roundCount = 1000000;
         for (int i = 0; i < roundCount; i++) {
             System.out.println("one train round " + i);
