@@ -22,7 +22,7 @@ public class MnistNN {
         String testLabelFile = ministRootPath + "t10k-labels-idx1-ubyte";
         String testImageFile = ministRootPath + "t10k-images-idx3-ubyte";
 
-        FCNeuralNetwork diyNeuralNetwork = new FCNeuralNetwork(28 * 28, 10, 1, 30);
+        FCNeuralNetwork diyNeuralNetwork = new FCNeuralNetwork(28 * 28, 10, 1, 60);
 
         System.out.println("start to get train labels");
         double[][] trainLabels = MnistDataLoader.getLabels(trainLabelFile, trainCount);
@@ -37,7 +37,7 @@ public class MnistNN {
         double[][] testImages = MnistDataLoader.getImages(testImageFile, testCount);
 
         int round = 1;
-        while (round < 100) {
+        while (round < Integer.MAX_VALUE) {
             System.out.println("\nstart round: " + (round++));
             System.out.println("start to train");
             long time1 = System.currentTimeMillis();
@@ -47,7 +47,7 @@ public class MnistNN {
             }
             System.out.println("\ntraining uses time: " + (System.currentTimeMillis() - time1));
 
-            System.out.println("\nstart to predict");
+            System.out.println("start to predict");
             long time2 = System.currentTimeMillis();
             int rightCount = 0;
             for (int j = 0; j < testLabels.length; j++) {

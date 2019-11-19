@@ -2,6 +2,7 @@ package cn.liubinbin.ai.diynn.fcnn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by bin on 2019/11/13.
@@ -11,8 +12,9 @@ import java.util.List;
 public class Layer {
 
     private static final double learnRate = 0.1;
-    private static final double initWeight = 0;
-    private static final Double ONE = 1d;
+//    private static final double initWeight = 0;
+//    private static final Double ONE = 1d;
+    private Random rand = new Random();
     private LayerType layerType;
     private List<Node> nodes = new ArrayList<Node>();
     private Layer preLayer;
@@ -37,7 +39,7 @@ public class Layer {
             this.weights = new double[nodeSize][preLayerSize + 1];
             for (int x = 0; x < nodeSize; x++) {
                 for (int y = 0; y < preLayerSize + 1; y++) {
-                    this.weights[x][y] = initWeight;
+                    this.weights[x][y] = rand.nextDouble();
                 }
             }
             this.preLayer = preLayer;
@@ -162,5 +164,13 @@ public class Layer {
                 this.weights[x][y] += learnRate * this.error[x] * preLayerNodeValue[y];
             }
         }
+    }
+
+    public static void main(String[] args) {
+        Random rand = new Random();
+        for (int i = 0;i< 100;i++) {
+            System.out.println(rand.nextDouble());
+        }
+
     }
 }
