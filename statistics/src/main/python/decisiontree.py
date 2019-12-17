@@ -13,7 +13,7 @@ def decision_tree():
     # print(len(xnparray))
     # print(len(ynparray))
 
-    x_train, x_test, y_train, y_test = train_test_split(xnparray, ynparray, test_size = 200, train_size = 800)
+    x_train, x_test, y_train, y_test = train_test_split(xnparray, ynparray, test_size = 200, train_size = 800, shuffle=False)
     print("x_train: " + str(len(x_train)) + ", x_test: " + str(len(x_test)) + ", y_train: " + str(len(y_train)) + ", y_test: " + str(len(y_test)))
 
     dtc = tree.DecisionTreeClassifier(criterion="entropy")

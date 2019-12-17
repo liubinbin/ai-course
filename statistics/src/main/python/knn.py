@@ -6,7 +6,7 @@ import load_data
 
 def knn():
 
-    data = load_data.load_german_data()
+    data = load_data.load_german_data_one_hot()
     xnparray = data['x']
     ynparray = data['y']
 
