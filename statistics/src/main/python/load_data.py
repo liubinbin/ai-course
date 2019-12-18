@@ -39,11 +39,10 @@ def load_german_data_one_hot(return_X_y=False):
         # print(line)
         attr = line.replace("\n", "").split(",")
         # print(len(attr))
-        # print(attr[:63])
-        # print(attr[63:])
-
-        x.append(attr[:63])
-        y.append(attr[63:])
+        # print(attr[:68])
+        # print(attr[68:])
+        x.append(attr[:68])
+        y.append(attr[68:])
         line = f.readline()
     f.close()
 
