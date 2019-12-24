@@ -18,7 +18,8 @@ def svm():
 
     x_train, x_test, y_train, y_test = train_test_split(xnparray, ynparray, test_size = 200, train_size = 800)
 
-    kernel = 'rbf'
+    # 'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'
+    # kernel = 'rbf'
     clf_rbf = SVC(kernel='rbf')
     clf_rbf.fit(x_train,y_train)
     score_rbf = clf_rbf.score(x_test,y_test)
@@ -35,6 +36,12 @@ def svm():
     clf_poly.fit(x_train,y_train)
     score_poly = clf_poly.score(x_test,y_test)
     print("The score of poly is : %f"%score_poly)
+
+    # kernel = 'sigmoid'
+    clf_poly = SVC(kernel='sigmoid')
+    clf_poly.fit(x_train,y_train)
+    score_poly = clf_poly.score(x_test,y_test)
+    print("The score of sigmoid is : %f"%score_poly)
 
 
 if  __name__ == "__main__":

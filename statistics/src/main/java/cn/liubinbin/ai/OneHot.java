@@ -96,7 +96,7 @@ public class OneHot {
                 stringBuilder.append(lineSplit[17]).append(ATTR_SEPARATOR);
                 stringBuilder.append(attr2onehot(lineSplit[18], new String[]{"A191", "A192"})).append(ATTR_SEPARATOR);
                 stringBuilder.append(attr2onehot(lineSplit[19], new String[]{"A201", "A202"})).append(CLASS_SEPARATOR);
-                stringBuilder.append(lineSplit[20]);
+                stringBuilder.append(attr2onehot(lineSplit[20], new String[]{"1", "2"}));
 
                 fileWriter.write(stringBuilder.toString() + "\n");
             }

@@ -41,8 +41,8 @@ def load_german_data_one_hot(return_X_y=False):
         # print(len(attr))
         # print(attr[:68])
         # print(attr[68:])
-        x.append(attr[:68])
-        y.append(attr[68:])
+        x.append(attr[:63])
+        y.append(attr[63:])
         line = f.readline()
     f.close()
 
