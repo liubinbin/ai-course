@@ -16,7 +16,7 @@ def decision_tree():
     x_train, x_test, y_train, y_test = train_test_split(xnparray, ynparray, test_size = 200, train_size = 800, shuffle=False)
     print("x_train: " + str(len(x_train)) + ", x_test: " + str(len(x_test)) + ", y_train: " + str(len(y_train)) + ", y_test: " + str(len(y_test)))
 
-    dtc = tree.DecisionTreeClassifier(criterion="entropy")
+    dtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=5)
     clf = dtc.fit(x_train, y_train)
     y_predict = clf.predict(x_test)
 
@@ -27,7 +27,7 @@ def decision_tree():
             succ_count = succ_count + 1
         # else:
         #     print(str(y_test[i][0]) + " " + str(y_predict[i]))
-    print("succ_count: ", succ_count , " succ_rate: %d", succ_count/len(y_test))
+    print("succ_count: ", succ_count , " succ_rate: %f", succ_count/len(y_test))
 
 
 if  __name__ == "__main__":

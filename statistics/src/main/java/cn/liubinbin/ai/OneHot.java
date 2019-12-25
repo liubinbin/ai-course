@@ -28,6 +28,42 @@ public class OneHot {
         return stringBuilder.toString();
     }
 
+    public static String range2onehot(String attribute, int[] candidates) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int num = Integer.parseInt(attribute);
+        for (int i = 0; i < candidates.length; i++) {
+            if (i != 0) {
+                stringBuilder.append(",");
+            }
+            if (i == 0) {
+                if (num < candidates[0]) {
+                    stringBuilder.append("1");
+                } else {
+                    stringBuilder.append("0");
+                }
+                stringBuilder.append(",");
+                if (num > candidates[i] && num < candidates[i+1]) {
+                    stringBuilder.append("1");
+                } else {
+                    stringBuilder.append("0");
+                }
+            } else if (i == candidates.length - 1) {
+                if (num > candidates[i]) {
+                    stringBuilder.append("1");
+                } else {
+                    stringBuilder.append("0");
+                }
+            } else {
+                if (num > candidates[i] && num < candidates[i+1]) {
+                    stringBuilder.append("1");
+                } else {
+                    stringBuilder.append("0");
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     public static void main(String[] args) throws IOException {
         String srcDataPath = "C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data";
         String targetDataPath = "C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data.onehot";
@@ -43,7 +79,8 @@ public class OneHot {
                 stringBuilder.append(lineSplit[1]).append(ATTR_SEPARATOR);
                 stringBuilder.append(attr2onehot(lineSplit[2], new String[]{"A30", "A31", "A32", "A33", "A34"})).append(ATTR_SEPARATOR);
                 stringBuilder.append(attr2onehot(lineSplit[3], new String[]{"A40", "A41", "A42", "A43", "A44", "A45", "A46", "A47", "A48", "A49", "A410"})).append(ATTR_SEPARATOR);
-                stringBuilder.append(lineSplit[4]).append(ATTR_SEPARATOR);
+                stringBuilder.append(range2onehot(lineSplit[4], new int[]{2000, 4000, 6000, 8000, 10000})).append(ATTR_SEPARATOR);
+//                stringBuilder.append(lineSplit[4]).append(ATTR_SEPARATOR);
                 stringBuilder.append(attr2onehot(lineSplit[5], new String[]{"A61", "A62", "A63", "A64", "A65"})).append(ATTR_SEPARATOR);
                 stringBuilder.append(attr2onehot(lineSplit[6], new String[]{"A71", "A72", "A73", "A74", "A75"})).append(ATTR_SEPARATOR);
                 stringBuilder.append(lineSplit[7]).append(ATTR_SEPARATOR);
@@ -59,13 +96,15 @@ public class OneHot {
                 stringBuilder.append(lineSplit[17]).append(ATTR_SEPARATOR);
                 stringBuilder.append(attr2onehot(lineSplit[18], new String[]{"A191", "A192"})).append(ATTR_SEPARATOR);
                 stringBuilder.append(attr2onehot(lineSplit[19], new String[]{"A201", "A202"})).append(CLASS_SEPARATOR);
-                stringBuilder.append(lineSplit[20]);
+                stringBuilder.append(attr2onehot(lineSplit[20], new String[]{"1", "2"}));
 
                 fileWriter.write(stringBuilder.toString() + "\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+//        System.out.println(range2onehot("3990", new int[]{1000, 2000, 3000}));
 
     }
 }

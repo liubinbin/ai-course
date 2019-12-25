@@ -96,13 +96,13 @@ public class FCNeuralNetwork {
         }
     }
 
-    private void printHiddenLayerWeight() {
+    public void printHiddenLayerWeight() {
         for (int i = 0; i < hiddenLayerSize; i++) {
             this.hiddenLayers.get(i).printWeights();
         }
     }
 
-    private void printOutputLayerWeight() {
+    public void printOutputLayerWeight() {
         this.outputLayer.printWeights();
     }
 }

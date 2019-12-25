@@ -29,10 +29,10 @@ def knn():
     print(k_scores)
 
     #可视化数据
-    plt.plot(k_range, k_scores)
-    plt.xlabel('Value of K for KNN')
-    plt.ylabel('Cross-Validated Accuracy')
-    plt.show()
+    # plt.plot(k_range, k_scores)
+    # plt.xlabel('Value of K for KNN')
+    # plt.ylabel('Cross-Validated Accuracy')
+    # plt.show()
 
 
 if  __name__ == "__main__":
