@@ -1,7 +1,10 @@
 from sklearn.svm import SVC
-from sklearn import datasets
 from sklearn.model_selection import train_test_split
 import load_data
+from score import cal_score
+from sklearn.externals import joblib
+import warnings
+warnings.filterwarnings("ignore")
 
 
 def svm():
@@ -12,36 +15,24 @@ def svm():
     #     max_iter=-1, probability=False, random_state=None, shrinking=True,
     #     tol=0.001, verbose=False)  # 可以根据前面介绍的参数，做出相应改变观察结果变化
 
-    data = load_data.load_german_data_one_hot()
+    data = load_data.load_data_s1()
     xnparray = data['x']
     ynparray = data['y']
 
-    x_train, x_test, y_train, y_test = train_test_split(xnparray, ynparray, test_size = 200, train_size = 800)
+    x_train, x_test, y_train, y_test = train_test_split(xnparray, ynparray, test_size = 200, train_size = 800, shuffle=False)
 
-    # 'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'
-    # kernel = 'rbf'
-    clf_rbf = SVC(kernel='rbf')
-    clf_rbf.fit(x_train,y_train)
-    score_rbf = clf_rbf.score(x_test,y_test)
-    print("The score of rbf is : %f"%score_rbf)
-
-    # kernel = 'linear'
-    clf_linear = SVC(kernel='linear')
-    clf_linear.fit(x_train,y_train)
-    score_linear = clf_linear.score(x_test,y_test)
-    print("The score of linear is : %f"%score_linear)
-
-    # kernel = 'poly'
-    clf_poly = SVC(kernel='poly')
-    clf_poly.fit(x_train,y_train)
-    score_poly = clf_poly.score(x_test,y_test)
-    print("The score of poly is : %f"%score_poly)
-
-    # kernel = 'sigmoid'
-    clf_poly = SVC(kernel='sigmoid')
-    clf_poly.fit(x_train,y_train)
-    score_poly = clf_poly.score(x_test,y_test)
-    print("The score of sigmoid is : %f"%score_poly)
+    # 'poly', 'rbf', 'sigmoid', 'linear'
+    for kernal in ['linear']:
+        print("kernal: {}".format(kernal))
+        clf = SVC(kernel=kernal)
+        clf.fit(x_train,y_train)
+        score_rbf = clf.score(x_test,y_test)
+        print("The score of kernal {} is : {}".format(kernal, score_rbf))
+        # clf = joblib.load('svm.pkl')
+        y_test_predict = clf.predict(x_test)
+        joblib.dump(clf, 'svm.pkl')
+        dict = cal_score(y_test_predict, y_test)
+        print("precision: {} recall: {} f1 {}".format(dict['precision'], dict['recall'], dict['f1']))
 
 
 if  __name__ == "__main__":

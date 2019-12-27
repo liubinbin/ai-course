@@ -27,22 +27,34 @@ def load_german_data(return_X_y=False):
     return dict
 
 
-def load_german_data_one_hot(return_X_y=False):
+def load_data_d1():
+    return load_german_data()
+
+
+def load_data_k1():
+    return load_german_data_one_hot("C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data.k1", 63)
+
+
+def load_data_s1():
+    return load_german_data_one_hot("C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data.s1", 63)
+
+
+def load_german_data_one_hot(data_path, split_pos):
 
     x = []
     y = []
 
-    data_path = "C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data.onehot"
+    # data_path = "C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data.onehot.k1"
     f = open(data_path)
     line = f.readline()
     while line:
         # print(line)
         attr = line.replace("\n", "").split(",")
         # print(len(attr))
-        # print(attr[:68])
-        # print(attr[68:])
-        x.append(attr[:63])
-        y.append(attr[63:])
+        # print(attr[:split_pos])
+        # print(attr[split_pos:])
+        x.append(attr[:split_pos])
+        y.append(attr[split_pos:])
         line = f.readline()
     f.close()
 

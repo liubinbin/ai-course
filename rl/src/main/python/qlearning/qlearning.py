@@ -82,11 +82,9 @@ def choose_path(start_point):
     else:
         cur_point = start_point
         print(start_point, end="")
-        cur_point = q[cur_point].index(max(q[cur_point]))
         while cur_point != END_POINT:
-            print(" -> {}".format(cur_point), end="")
             cur_point = q[cur_point].index(max(q[cur_point]))
-        print(" -> {}".format(cur_point))
+            print(" -> {}".format(cur_point), end="")
 
 
 if __name__ == '__main__':
