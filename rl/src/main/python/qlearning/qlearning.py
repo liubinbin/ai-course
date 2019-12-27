@@ -48,6 +48,7 @@ def one_round():
 
 
 def print_q():
+    print("q function")
     for i in range(6):
         print(q[i])
 
@@ -70,10 +71,25 @@ def q_learning():
         one_round()
         print_q()
         round_idx = round_idx + 1
-    print("result")
+    print("start to normalize_q")
     normalize_q()
-    print_q()
+
+
+def choose_path(start_point):
+    print("path for {}".format(start_point))
+    if start_point == END_POINT:
+        print(start_point)
+    else:
+        cur_point = start_point
+        print(start_point, end="")
+        cur_point = q[cur_point].index(max(q[cur_point]))
+        while cur_point != END_POINT:
+            print(" -> {}".format(cur_point), end="")
+            cur_point = q[cur_point].index(max(q[cur_point]))
+        print(" -> {}".format(cur_point))
 
 
 if __name__ == '__main__':
     q_learning()
+    print_q()
+    choose_path(2)
