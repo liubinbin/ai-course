@@ -39,6 +39,41 @@ def load_data_s1():
     return load_german_data_one_hot("C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data.s1", 63)
 
 
+def load_data_n1():
+    return load_german_data_float("C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data.s1", 63)
+
+
+def load_data_b1():
+    return load_german_data_float("C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data.s1", 63)
+
+
+def load_german_data_float(data_path, split_pos):
+
+    x = []
+    y = []
+
+    data_path = "C:\\Users\\viruser.v-desktop\\Desktop\\AI 作业\\german.data"
+    f = open(data_path)
+    line = f.readline()
+    while line:
+        # print(line)
+        attr = line.replace("\n", "").replace("A", "").split(" ")
+
+        x.append(attr[:20])
+        y.append(attr[20:])
+        line = f.readline()
+    f.close()
+
+    xnparray = np.array(x,dtype = 'float_')
+    ynparray = np.array(y,dtype = 'float_')
+
+    dict = {}
+    dict['x'] = xnparray
+    dict['y'] = ynparray
+
+    return dict
+
+
 def load_german_data_one_hot(data_path, split_pos):
 
     x = []
